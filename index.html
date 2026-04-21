@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamPro - نظام الاختبارات التفاعلي</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #0a0f1e;
+            --card: #1e2a3e;
+            --border: #3b4e6b;
+            --choice: #2a3a4f;
+            --choice-hover: #324a62;
+            --text: #e8edf5;
+            --gold: #f59e0b;
+            --red: #dc2626;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .font-fira { font-family: 'Fira Code', monospace; }
+
+        .designer-card {
+            background: linear-gradient(to bottom, #2e0c0c, #1a0505);
+            border: 2px solid #dc2626;
+            border-bottom-width: 6px;
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 450px;
+            margin: 0 auto;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .designer-img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid #dc2626;
+            object-fit: cover;
+            margin: 0 auto 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            margin: 6px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.2s;
+        }
+
+        .social-btn:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+
+        .welcome-input {
+            background: white;
+            color: black;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 24px;
+            font-size: 18px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .welcome-input:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); }
+
+        .btn-start {
+            background: linear-gradient(to bottom, #dc2626, #991b1b);
+            color: white;
+            padding: 16px 60px;
+            border-radius: 14px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 12px 30px rgba(220, 38, 38, 0.4);
+            transition: all 0.3s;
+        }
+
+        .btn-start:hover { transform: translateY(-4px); box-shadow: 0 15px 35px rgba(220, 38, 38, 0.5); }
+
+        .top-bar {
+            position: sticky; top: 0; backdrop-filter: blur(12px);
+            background: rgba(10, 15, 30, 0.8); height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 32px; z-index: 100; border-bottom: 1px solid var(--border);
+        }
+
+        .timer { font-family: 'Fira Code', monospace; color: var(--gold); font-size: 26px; font-weight: bold; }
+
+        .progress-container { width: 100%; height: 8px; background: #111827; }
+        .progress-bar { height: 100%; width: 0%; background: linear-gradient(to right, #dc2626, #f59e0b, #10b981); transition: width 0.3s ease; }
+
+        .code-block {
+            direction: ltr; background: #0d1117; color: #f87171; border: 1px solid var(--border);
+            padding: 20px; border-radius: 12px; font-family: 'Fira Code', monospace; font-size: 14px;
+            margin: 20px 0; line-height: 1.6; overflow-x: auto;
+        }
+
+        .choice {
+            background: var(--choice); border-radius: 18px; padding: 18px;
+            display: flex; align-items: center; gap: 16px; cursor: pointer;
+            transition: all 0.2s; border: 1px solid transparent; text-align: right; width: 100%;
+        }
+
+        .choice:hover { background: var(--choice-hover); transform: translateY(-3px); }
+
+        .choice-letter {
+            width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+            border-radius: 10px; font-weight: bold; color: white; flex-shrink: 0;
+        }
+
+        .choice-a .choice-letter { background: linear-gradient(to bottom, #dc2626, #b91c1c); box-shadow: 0 4px 12px rgba(220,38,38,0.4); }
+        .choice-b .choice-letter { background: linear-gradient(to bottom, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245,158,11,0.4); }
+        .choice-c .choice-letter { background: linear-gradient(to bottom, #10b981, #059669); box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
+        .choice-d .choice-letter { background: linear-gradient(to bottom, #8b5cf6, #7c3aed); box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
+
+        .choice-a { border-right: 6px solid #dc2626; }
+        .choice-b { border-right: 6px solid #f59e0b; }
+        .choice-c { border-right: 6px solid #10b981; }
+        .choice-d { border-right: 6px solid #8b5cf6; }
+
+        .choice.correct { background: rgba(16, 185, 129, 0.25) !important; border: 2px solid #10b981 !important; color: white !important; }
+        .choice.wrong { background: rgba(239, 68, 68, 0.2) !important; border: 2px solid #ef4444 !important; }
+
+        .results-circle {
+            width: 200px; height: 200px; border-radius: 50%; border: 10px solid #dc2626;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            margin: 0 auto 32px; font-weight: bold; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .score { font-size: 54px; color: white; line-height: 1; }
+
+        .whatsapp-btn {
+            background: #25d366; color: white; padding: 14px 40px; border-radius: 35px;
+            text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 12px;
+            margin-top: 24px; transition: all 0.3s; font-size: 18px;
+        }
+
+        .whatsapp-btn:hover { background: #20bd5c; transform: scale(1.05); }
+
+        .review-card {
+            background: rgba(255, 255, 255, 0.03); border-radius: 16px; padding: 24px;
+            border-right: 6px solid #3b4e6b; margin-bottom: 20px; transition: all 0.2s;
+        }
+
+        .screen { display: none; min-height: 100vh; width: 100%; padding-bottom: 50px; }
+        .screen.active { display: block; animation: fadeIn 0.6s ease-out; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: var(--bg); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    </style>
+</head>
+<body class="custom-scrollbar">
+
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="flex flex-col items-center justify-center min-h-screen px-6 py-12">
+            <div class="designer-card mb-8">
+                <img src="https://cdn.jsdelivr.net/gh/mhshahen6/mh_photo@main/1770841296798.webp" class="designer-img" alt="Engineer">
+                <h2 class="text-2xl font-bold text-white">المهندس محمد محمود شاهين</h2>
+                <p class="text-[#f59e0b] font-bold mb-6">خبير البرمجة والذكاء الاصطناعي بالتربية والتعليم</p>
+                <div class="flex flex-wrap justify-center">
+                    <a href="#" class="social-btn"><i data-lucide="globe"></i> المدونة</a>
+                    <a href="#" class="social-btn"><i data-lucide="facebook"></i> كيريو</a>
+                    <a href="#" class="social-btn"><i data-lucide="user"></i> السيرة الذاتية</a>
+                    <a href="#" class="social-btn"><i data-lucide="file-text"></i> الاختبارات</a>
+                    <a href="#" class="social-btn"><i data-lucide="laptop"></i> البوابة</a>
+                </div>
+            </div>
+
+            <div class="text-center w-full max-w-lg">
+                <h1 class="text-3xl md:text-4xl font-black text-white mb-4">نظام الاختبارات التفاعلي المطور</h1>
+                <p class="text-lg opacity-70 mb-8">يرجى إدخال اسمك الرباعي للمتابعة (الاختبار من 40 سؤالاً)</p>
+                <div class="flex flex-col items-center gap-6">
+                    <input type="text" id="user-name-input" class="welcome-input" placeholder="اسم الطالب الكامل">
+                    <button class="btn-start" onclick="startExam()">ابدأ التحدي الآن</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Screen -->
+    <div id="exam-screen" class="screen">
+        <div class="top-bar">
+            <div class="bg-[#dc2626]/20 border border-[#dc2626] text-white px-5 py-2 rounded-full font-bold text-sm">
+                السؤال: <span id="q-count-display">1</span> / 40
+            </div>
+            <div class="timer" id="timer-display">60:00</div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+
+        <div class="max-w-5xl mx-auto px-6 py-12">
+            <div class="bg-[#1e2a3e] rounded-3xl border-2 border-[#3b4e6b] p-8 md:p-12 shadow-2xl">
+                <div id="question-area" class="space-y-8">
+                    <div class="space-y-4">
+                        <span id="q-cat" class="text-[#f59e0b] font-bold uppercase tracking-widest text-sm bg-[#f59e0b]/10 px-4 py-1 rounded-md">برمجة JavaScript</span>
+                        <h2 id="q-text" class="text-2xl md:text-3xl font-bold text-white leading-tight">...</h2>
+                    </div>
+                    
+                    <div id="code-container" class="hidden">
+                        <div class="code-block" id="code-area"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4" id="choices-grid">
+                        <!-- Choices injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen" class="screen">
+        <div class="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center">
+            <div class="text-center w-full mb-16">
+                <h1 class="text-4xl font-black text-white mb-10">نتائج الاختبار</h1>
+                <div class="results-circle">
+                    <span class="text-xs opacity-60 uppercase tracking-widest mb-1">النتيجة النهائية</span>
+                    <span class="score" id="final-score-display">0/40</span>
+                    <span class="text-[#f59e0b] text-xl font-bold" id="final-percent-display">0%</span>
+                </div>
+                <p class="text-2xl font-bold text-[#e8edf5] mb-8">أحسنت يا <span id="display-name" class="text-[#f59e0b]">...</span>! لقد أتممت الاختبار بنجاح.</p>
+                <a href="#" id="whatsapp-share" target="_blank" class="whatsapp-btn">
+                    <i data-lucide="send"></i> إرسال النتيجة للمعلم عبر واتساب
+                </a>
+            </div>
+
+            <div class="w-full space-y-8">
+                <h3 class="text-2xl font-bold text-white border-r-6 border-[#f59e0b] pr-4">مراجعة الأسئلة</h3>
+                <div id="review-list" class="space-y-6">
+                    <!-- Review items injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center py-10 opacity-30 text-xs text-white">
+        © جميع الحقوق محفوظة - تطوير المهندس محمد شاهين
+    </footer>
+
+    <script>
+        // --- Questions Data ---
+        const QUESTIONS = [
+          { id: 1, cat: 'if / else if', q: 'ما الناتج المتوقع عند تنفيذ الكود التالي؟', code: `let grade = 66;\nif (grade >= 90) {\n  console.log("ممتاز");\n} else if (grade >= 80) {\n  console.log("جيد جداً");\n} else if (grade >= 70) {\n  console.log("جيد");\n} else if (grade >= 60) {\n  console.log("ناجح");\n} else {\n  console.log("راسب");\n}`, choices: ['ممتاز', 'جيد', 'ناجح', 'راسب'], ans: 2, explain: 'الدرجة 66 تحقق الشرط (>= 60) لذلك الناتج هو "ناجح".' },
+          { id: 2, cat: 'for loop', q: 'كم مرة ستتم طباعة كلمة "محاولة"؟', code: `for (let count = 1; count <= 7; count += 2) {\n  console.log("محاولة");\n}`, choices: ['7 مرات', '4 مرات', '3 مرات', 'مرتان'], ans: 1, explain: 'القيم هي: 1 ثم 3 ثم 5 ثم 7، إذن التنفيذ يتم 4 مرات.' },
+          { id: 3, cat: 'Arrays', q: 'ما الناتج الذي سيتم طباعته عند طلب العنصر رقم 2؟', code: `let names = ["علي", "سارة", "محمود", "نور"];\nconsole.log(names[2]);`, choices: ['علي', 'سارة', 'محمود', 'نور'], ans: 2, explain: 'الفهرسة تبدأ من 0 (علي=0، سارة=1، محمود=2).' },
+          { id: 4, cat: 'Variables', q: 'ما القيمة النهائية للمتغير مجموع (sum)؟', code: `let sum = 15;\nsum = sum + 10;\nsum += 5;\nconsole.log(sum);`, choices: ['15', '25', '30', '35'], ans: 2, explain: '15 + 10 = 25، ثم 25 + 5 = 30.' },
+          { id: 5, cat: 'Logical Operators', q: 'ما الناتج المتوقع من فحص الشروط؟', code: `let age = 17;\nlet permit = true;\nif (age >= 18 || permit === true) {\n  console.log("مسموح");\n} else {\n  console.log("مرفوض");\n}`, choices: ['مسموح', 'مرفوض', 'خطأ برمي', 'لا شيء'], ans: 0, explain: 'بسبب استخدام عامل OR (||)، وجود تصريح (permit=true) يكفي لتحقيق الشرط.' },
+          { id: 6, cat: 'Arrays + Loop', q: 'ما القيمة النهائية للمتغير مجموع الأرقام؟', code: `let numbers = [2, 4, 6];\nlet sum = 0;\nfor (let index = 0; index < numbers.length; index++) {\n  sum += numbers[index];\n}\nconsole.log(sum);`, choices: ['6', '10', '12', '14'], ans: 2, explain: '2 + 4 + 6 = 12 مجمموعة داخل الحلقة.' },
+          { id: 7, cat: 'Nested if', q: 'ما الناتج الذي سيطبع في Console؟', code: `let grade = 95;\nlet rank = 1;\nif (grade >= 90) {\n  if (rank === 1) {\n    console.log("الأول وممتاز");\n  }\n}`, choices: ['الأول وممتاز', 'ممتاز فقط', 'لا شيء', 'خطأ'], ans: 0, explain: 'الشرطين الخارجي والداخلي محققان (95 >= 90 و 1 === 1).' },
+          { id: 8, cat: 'Array length', q: 'ما القيمة المطبوعة التي تعبر عن طول المصفوفة؟', code: `let students = ["أحمد", "منى", "ياسر"];\nconsole.log(students.length);`, choices: ['2', '3', '4', '0'], ans: 1, explain: 'تحتوي المصفوفة على 3 عناصر، لذا الطول هو 3.' },
+          { id: 9, cat: 'for + if', q: 'كم مرة سيتم طباعة كلمة "توقف"؟', code: `for (let num = 1; num < 5; num++) {\n  if (num === 3) {\n    console.log("توقف");\n  }\n}`, choices: ['مرة واحدة', 'مرتان', '4 مرات', 'لن يطبع'], ans: 0, explain: 'القيمة 3 تمر مرة واحدة فقط داخل السلسلة من 1 إلى 4.' },
+          { id: 10, cat: 'String + Number', q: 'ما الناتج المتوقع عند دمج نص مع رقم؟', code: `let num = "20";\nconsole.log(num + 5);`, choices: ['25', '"25"', '"205"', 'NaN'], ans: 2, explain: 'الجمع (+) مع النصوص يقوم بالدمج (Concatenation) وليس الجمع الرياضي.' },
+          { id: 11, cat: 'Functions', q: 'ما ناتج استدعاء الدالة calculate(3, 4)؟', code: `function calculate(a, b) {\n  return a + b;\n}\nconsole.log(calculate(3, 4));`, choices: ['34', '7', 'undefined', 'خطأ'], ans: 1, explain: 'الدالة تعيد ناتج جمع المعاملين (3 + 4 = 7).' },
+          { id: 12, cat: 'Functions return', q: 'ما الناتج المطبوع عند غياب return؟', code: `function calculate() {\n  let result = 10;\n}\nconsole.log(calculate());`, choices: ['10', 'null', 'undefined', 'خطأ'], ans: 2, explain: 'في حال عدم وجود return، تعيد الدالة JavaSript القيمة undefined افتراضياً.' },
+          { id: 13, cat: 'Scope', q: 'ماذا سيحدث عند محاولة الوصول لمتغير الـ Block؟', code: `if (true) {\n  let value = 20;\n}\nconsole.log(value);`, choices: ['20', 'undefined', 'ReferenceError', '0'], ans: 2, explain: 'المتغير المعرف بـ let داخل Block لا يمكن الوصول إليه من خارجه.' },
+          { id: 14, cat: 'for loop', q: 'ما تسلسل الأرقام الذي سيتم طباعته؟', code: `for (let num = 0; num < 3; num++) {\n  console.log(num);\n}`, choices: ['0 1 2', '1 2 3', '0 1 2 3', '1 2'], ans: 0, explain: 'تبدأi=0 وتتوقف قبل أن تصل لـ 3 (0، 1، 2).' },
+          { id: 15, cat: 'Array index', q: 'أي سطر كود سيطبع اللون "أخضر"؟', code: `let colors = ["أحمر", "أزرق", "أخضر"];`, choices: ['colors[1]', 'colors[2]', 'colors[3]', 'colors[0]'], ans: 1, explain: 'الفهرس 2 يشير للعنصر الثالث في المصفوفة.' },
+          { id: 16, cat: 'Comparison', q: 'ما الفرق الجوهري بين = و == في البرمجة؟', code: ``, choices: ['لا فرق بينهما', '= للإسناد و == للمقارنة', 'كلاهما للمقارنة', '== للإسناد و = للمقارنة'], ans: 1, explain: 'علامة واحدة هي Assigning، وعلامتان Equal-to Comparison.' },
+          { id: 17, cat: 'Random', q: 'أي كود يولد رقمًا صحيحًا عشوائياً من 0 إلى 9؟', code: ``, choices: ['Math.random(10)', 'Math.floor(Math.random() * 10)', 'Math.floor(Math.random()) * 10', 'Math.round(10)'], ans: 1, explain: 'نضرب في المدى ثم نستخدم floor لإسقاط الأجزاء العشرية.' },
+          { id: 18, cat: 'for...of', q: 'ما الطفرة الصحيحة لعمل حلقة دوران على عناصر مصفوفة؟', code: `let names = ["علي", "نور"];`, choices: ['for (let n in names)', 'for (let n of names)', 'for (let n = names)', 'for index of names'], ans: 1, explain: 'for...of تستخرج القيم مباشرة من المصفوفات.' },
+          { id: 19, cat: 'Nested loop', q: 'كم عدد النجوم الكلي التي سيتم طباعتها؟', code: `for (let i = 0; i < 3; i++) {\n  for (let j = 0; j < 2; j++) {\n    console.log("*");\n  }\n}`, choices: ['2', '3', '5', '6'], ans: 3, explain: 'نضرب عدد دورات الحلقة الخارجية في الداخل (3 × 2 = 6).' },
+          { id: 20, cat: 'Debugging', q: 'ما المشكلة في الكود البرمجي التالي؟', code: `for (let i = 0; i < 3; i--) {\n  console.log("فائز");\n}`, choices: ['الشرط خاطئ', 'حلقة لانهائية بسبب i--', 'يجب استخدام const', 'الدالة i ناقصة'], ans: 1, explain: 'استخدام i-- يجعل القيمة تتناقص ولا تصل أبداً لكسر شرط i < 3.' },
+          { id: 21, cat: 'if logic', q: 'ما الناتج المتوقع لـ age = 15؟', code: `let age = 15;\nif (age > 18) {\n  console.log("بالغ");\n} else {\n  console.log("قاصر");\n}`, choices: ['بالغ', 'قاصر', 'undefined', 'خطأ'], ans: 1, explain: 'الشرط 15 > 18 خاطئ فينفذ كود الـ else.' },
+          { id: 22, cat: 'Array length', q: 'ما طول المصفوفة [10, 20, 30, 40]؟', code: `let grades = [10, 20, 30, 40];`, choices: ['3', '4', '5', '10'], ans: 1, explain: 'المصفوفة تحتوى على 4 عناصر بالضبط.' },
+          { id: 23, cat: 'for sum', q: 'ما ناتج جمع الأرقام من 1 إلى 3؟', code: `let sum = 0;\nfor (let n = 1; n <= 3; n++) {\n  sum += n;\n}`, choices: ['3', '5', '6', '7'], ans: 2, explain: '1 + 2 + 3 = 6.' },
+          { id: 24, cat: 'Boolean', q: 'ماذا سيطبع الكود الشرطي؟', code: `let res = 92;\nlet att = true;\nif (res >= 90 && att) {\n  console.log("درجة كاملة");\n}`, choices: ['درجة كاملة', 'ناجح', 'فشل', 'لا شيء'], ans: 0, explain: 'الشرطان (92 >= 90) و (true) كلاهما محققان.' },
+          { id: 25, cat: 'Environment', q: 'ماذا سيحدث لمخرجات console.log(x)؟', code: `function f() {\n  let x = 100;\n}\nconsole.log(x);`, choices: ['100', 'ReferenceError', 'undefined', '0'], ans: 1, explain: 'x غير معرف خارج نطاق الدالة (Local Scope).' },
+          { id: 26, cat: 'Math', q: 'ما ناتج استدعاء sum(5, 2)؟', code: `function sum(x, y) {\n  return x + y;\n}`, choices: ['52', '7', 'NaN', 'undefined'], ans: 1, explain: '5 + 2 = 7.' },
+          { id: 27, cat: 'Loop limits', q: 'ما هي الأرقام المطبوعة؟', code: `for (let i = 2; i < 5; i++) {\n  console.log(i);\n}`, choices: ['2 3 4', '1 2 3', '2 3 4 5', '2 5'], ans: 0, explain: 'يبدأ من 2 وينتهي قبل 5 (2، 3، 4).' },
+          { id: 28, cat: 'Index', q: 'أي سطر سيطبع الكلمة الأخيرة "علوم"؟', code: `let labels = ["عربي", "رياضيات", "علوم"];`, choices: ['labels[1]', 'labels[2]', 'labels[3]', 'labels.last'], ans: 1, explain: 'كلمة علوم تقع في الفهرس رقم 2 (العد يبدأ من الصفر).' },
+          { id: 29, cat: 'Datatypes', q: 'ما ناتج "5" + 3 في JS؟', code: ``, choices: ['8', '53', '15', 'Error'], ans: 1, explain: 'عامل + مع نص يقوم بدمج القيم، فتصبح 53.' },
+          { id: 30, cat: 'Typeof', q: 'ما هو نوع البيانات (typeof) المتوقع للطرح؟', code: `let v = "100" - 10;`, choices: ['string', 'number', 'boolean', 'NaN'], ans: 1, explain: 'عامل الطرح (-) يحاول تحويل النصوص إلى أرقام، فالناتج 90 ونوعه number.' },
+          { id: 31, cat: 'Iterations', q: 'أي جملة تكرار صحيحة لطباعة الأسماء؟', code: ``, choices: ['for (let n of arr)', 'for (let n in of arr)', 'for n in arr', 'iterate n through arr'], ans: 0, explain: 'استخدام of هو المعياري للمصفوفات (Arrays).' },
+          { id: 32, cat: 'Infinite loops', q: 'ما المشكلة البرمجية هنا؟', code: `for (let i = 0; i < 5; i--) { ... }`, choices: ['نقص المتغير i', 'حلقة لانهائية', 'خطأ في الأقواس', 'لا توجد مشكلة'], ans: 1, explain: 'i ستقل للأبد عن 5 ولن تنتهي الحلقة.' },
+          { id: 33, cat: 'Logical AND', q: 'ما الناتج المتوقع؟', code: `let g = 85; let a = true;\nif (g >= 80 && a) { ... }`, choices: ['تحقق الشرط', 'لم يتحقق', 'خطأ', 'undefined'], ans: 0, explain: 'كل من g >= 80 و a=true قيم صائبة.' },
+          { id: 34, cat: 'Nested Iterations', q: 'كم عدد دورات الحلقة الكلي؟', code: `for(let i=0; i<2; i++) for(let j=0; j<3; j++) print("*");`, choices: ['5', '6', '3', '2'], ans: 1, explain: '2 × 3 = 6 دورات.' },
+          { id: 35, cat: 'Update values', q: 'ما الناتج المطبوع بعد التعديل؟', code: `let n = [1, 2, 3]; n[1] = 10; console.log(n[1]);`, choices: ['2', '3', '10', '1'], ans: 2, explain: 'تم استبدال القيمة عند الفهرس 1 (وهي 2) بـ 10.' },
+          { id: 36, cat: 'Return effect', q: 'ماذا سيتم طباعته في الأولوية؟', code: `function c() { return "تم"; console.log("x"); }`, choices: ['تم فقط', 'تم وبجانبها x', 'x فقط', 'لا شيء'], ans: 0, explain: 'أي كود بعد كلمة return لا ينفذ نهائياً.' },
+          { id: 37, cat: 'Math Floor', q: 'كيف ننتج رقم عشوائي من 1 لـ 5؟', code: ``, choices: ['Math.floor(Math.random()*5)+1', 'Math.random(5)', 'random(1,5)', 'Math.floor(random)'], ans: 0, explain: 'نضرب في 5 (0-4.9) ثم ننقص الأجزاء ونضيف 1 لتصبح من 1-5.' },
+          { id: 38, cat: 'HTML tags', q: 'ما الوسم الصحيح لإدراج صورة؟', code: ``, choices: ['<a>', '<img>', '<div>', '<p>'], ans: 1, explain: 'تم تصميم وسم img خصيصاً للصور.' },
+          { id: 39, cat: 'Selectors', q: 'كيف نستهدف class باسم "box" في CSS؟', code: ``, choices: ['#box', '.box', 'box', '@box'], ans: 1, explain: 'النقطة (.) ترمز للـ classes في لغة Stylesheet.' },
+          { id: 40, cat: 'Links', q: 'ما هي الخاصية (Attribute) التي تحدد مسار الرابط؟', code: ``, choices: ['src', 'href', 'alt', 'data'], ans: 1, explain: 'حقل href هو المسؤول عن تحديد الوجهة في روابط <a>.' },
+        ];
+
+        // --- App Logic ---
+        let currentIdx = 0;
+        let score = 0;
+        let userName = '';
+        let userAnswers = new Array(QUESTIONS.length).fill(null);
+        let timer = 3600;
+        let timerInterval;
+        let isAnswered = false;
+
+        function startExam() {
+            const input = document.getElementById('user-name-input');
+            userName = input.value.trim();
+            if (!userName) { alert('يرجى إدخال اسمك للبدء'); return; }
+
+            document.getElementById('welcome-screen').classList.remove('active');
+            document.getElementById('exam-screen').classList.add('active');
+            renderQuestion();
+            startTimer();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timer--;
+                const m = Math.floor(timer / 60);
+                const s = timer % 60;
+                document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                if (timer <= 0) finishExam();
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            const q = QUESTIONS[currentIdx];
+            document.getElementById('q-count-display').innerText = currentIdx + 1;
+            document.getElementById('q-cat').innerText = q.cat;
+            document.getElementById('q-text').innerText = q.q;
+            document.getElementById('progress-bar').style.width = `${((currentIdx + 1) / QUESTIONS.length) * 100}%`;
+
+            const codeContainer = document.getElementById('code-container');
+            if (q.code) {
+                codeContainer.classList.remove('hidden');
+                document.getElementById('code-area').innerText = q.code;
+            } else {
+                codeContainer.classList.add('hidden');
+            }
+
+            const grid = document.getElementById('choices-grid');
+            grid.innerHTML = '';
+            
+            const variantClasses = ['choice-a', 'choice-b', 'choice-c', 'choice-d'];
+            const letters = ['A', 'B', 'C', 'D'];
+
+            q.choices.forEach((choice, i) => {
+                const btn = document.createElement('button');
+                btn.className = `choice ${variantClasses[i]}`;
+                btn.innerHTML = `
+                    <div class="choice-letter">${letters[i]}</div>
+                    <div class="text-xl font-medium">${choice}</div>
+                `;
+                btn.onclick = () => handleSelect(i);
+                grid.appendChild(btn);
+            });
+            isAnswered = false;
+        }
+
+        function handleSelect(idx) {
+            if (isAnswered) return;
+            isAnswered = true;
+            
+            userAnswers[currentIdx] = idx;
+            const q = QUESTIONS[currentIdx];
+            const btns = document.querySelectorAll('.choice');
+
+            // Apply feedback to all buttons
+            btns.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.ans) {
+                    btn.classList.add('correct');
+                } else if (i === idx) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            if (idx === q.ans) score++;
+
+            setTimeout(() => {
+                if (currentIdx < QUESTIONS.length - 1) {
+                    currentIdx++;
+                    renderQuestion();
+                } else {
+                    finishExam();
+                }
+            }, 1200);
+        }
+
+        function finishExam() {
+            clearInterval(timerInterval);
+            document.getElementById('exam-screen').classList.remove('active');
+            document.getElementById('results-screen').classList.add('active');
+            
+            const total = QUESTIONS.length;
+            const percent = (score / total) * 100;
+            document.getElementById('final-score-display').innerText = `${score}/${total}`;
+            document.getElementById('final-percent-display').innerText = `${percent.toFixed(1)}%`;
+            document.getElementById('display-name').innerText = userName;
+
+            // WhatsApp link
+            const waText = encodeURIComponent(`أهلاً بك، أنا الطالب: ${userName}. حصلت على ${score} من ${total} بنسبة ${percent.toFixed(1)}% في اختبار المهندس محمد شاهين.`);
+            document.getElementById('whatsapp-share').href = `https://wa.me/201029966799?text=${waText}`;
+
+            // Reviews
+            const list = document.getElementById('review-list');
+            list.innerHTML = '';
+            QUESTIONS.forEach((q, idx) => {
+                const ansIdx = userAnswers[idx];
+                const isCorrect = ansIdx === q.ans;
+                const card = document.createElement('div');
+                card.className = `review-card ${isCorrect ? 'border-[#10b981]' : 'border-[#ef4444]'}`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4 gap-4">
+                        <h4 class="text-lg font-bold text-white">إجابة سؤال ${idx + 1}: ${q.q}</h4>
+                        <span class="px-3 py-1 rounded-full text-xs font-bold ${isCorrect ? 'bg-[#10b981]/20 text-[#10b981]' : 'bg-[#ef4444]/20 text-[#ef4444]'}">
+                            ${isCorrect ? 'صحيحة' : 'خاطئة'}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="p-3 bg-black/20 rounded-lg">
+                            <p class="text-gray-400 text-xs mb-1">إجابتك:</p>
+                            <p class="font-bold ${isCorrect ? 'text-[#10b981]' : 'text-[#ef4444]'}">${ansIdx !== null ? q.choices[ansIdx] : 'لم تجب'}</p>
+                        </div>
+                        <div class="p-3 bg-black/20 rounded-lg">
+                            <p class="text-gray-400 text-xs mb-1">الصحيحة:</p>
+                            <p class="font-bold text-[#10b981]">${q.choices[q.ans]}</p>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded-lg border border-white/5">
+                        <p class="text-[#f59e0b] font-bold text-xs mb-1">التفسير:</p>
+                        <p class="text-gray-300 text-sm italic">${q.explain}</p>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+
+            // Re-init lucide
+            lucide.createIcons();
+        }
+
+        // Init icons on load
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
