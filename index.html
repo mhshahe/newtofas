@@ -1,468 +1,904 @@
 <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, inital-scale=1.0" />
+<title></title>
+<style type="text/css">
+
+</style>
+</head>
+<body>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExamPro - نظام الاختبارات التفاعلي</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>الاختبار التجريبي للبرمجة 🚀</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
     <style>
+        /* ================= المتغيرات ================= */
         :root {
-            --bg: #0a0f1e;
-            --card: #1e2a3e;
-            --border: #3b4e6b;
-            --choice: #2a3a4f;
-            --choice-hover: #324a62;
-            --text: #e8edf5;
-            --gold: #f59e0b;
-            --red: #dc2626;
+            --bg-body-1: #020617; 
+            --bg-body-2: #0f172a;
+            --card-bg: rgba(15, 23, 42, 0.9); 
+            --glass-border: rgba(255, 255, 255, 0.2); 
+            --primary: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --hue: 220;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .font-fira { font-family: 'Fira Code', monospace; }
-
-        .designer-card {
-            background: linear-gradient(to bottom, #2e0c0c, #1a0505);
-            border: 2px solid #dc2626;
-            border-bottom-width: 6px;
-            border-radius: 20px;
-            padding: 24px;
-            width: 100%;
-            max-width: 450px;
-            margin: 0 auto;
-            text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-
-        .designer-img {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            border: 4px solid #dc2626;
-            object-fit: cover;
-            margin: 0 auto 16px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
-        .social-btn {
-            display: inline-flex;
+            background: linear-gradient(135deg, var(--bg-body-1), var(--bg-body-2));
+            color: var(--text-main);
+            font-family: 'Tajawal', sans-serif;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            margin: 6px;
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.2s;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        .social-btn:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+        /* خلفية متحركة */
+        .bg-blobs { 
+            position: fixed; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 0; 
+            overflow: hidden; 
+            pointer-events: none; 
+            filter: blur(90px); 
+            opacity: 0.35; 
+            top: 0;
+            left: 0;
+        }
+        .blob { 
+            position: absolute; 
+            border-radius: 50%; 
+            animation: float 12s infinite alternate ease-in-out; 
+        }
+        .blob-1 { 
+            width: 50vw; 
+            height: 50vw; 
+            min-width: 300px; 
+            min-height: 300px; 
+            background: hsla(var(--hue), 80%, 60%, 0.5); 
+            top: -10%; 
+            left: -10%; 
+            transition: background 1s ease; 
+        }
+        .blob-2 { 
+            width: 60vw; 
+            height: 60vw; 
+            min-width: 400px; 
+            min-height: 400px; 
+            background: hsla(calc(var(--hue) + 60), 80%, 60%, 0.5); 
+            bottom: -20%; 
+            right: -10%; 
+            animation-delay: -6s; 
+            transition: background 1s ease; 
+        }
+        @keyframes float { 
+            0% { transform: translate(0, 0) scale(1); } 
+            100% { transform: translate(40px, 60px) scale(1.15); } 
+        }
 
-        .welcome-input {
-            background: white;
-            color: black;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            padding: 14px 24px;
-            font-size: 18px;
+        /* ================= الحاوية الرئيسية ================= */
+        #app-container {
+            position: relative;
             width: 100%;
-            max-width: 320px;
+            height: 95%;
+            max-width: 98%;
+            padding: 5px 12px 12px 12px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+            overflow: hidden;
+        }
+
+        /* الكارت */
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 2px solid var(--glass-border);
+            border-radius: 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: clamp(20px, 5vw, 35px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px hsla(var(--hue), 100%, 60%, 0.2), inset 0 2px 0 rgba(255,255,255,0.2);
+            opacity: 0;
+            transform: translateY(50px) scale(0.95);
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            overflow-y: auto;
+            overflow-x: hidden;
+            overscroll-behavior: contain;
+            gap: 15px;
+        }
+        
+        .card::-webkit-scrollbar { width: 5px; }
+        .card::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; margin-top: 8px; margin-bottom: 8px; }
+        .card::-webkit-scrollbar-thumb { background: hsla(var(--hue), 80%, 60%, 0.6); border-radius: 10px; }
+        
+        .card > * { width: 100%; max-width: 100%; }
+        
+        .card.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+            position: relative;
+            border-top: 4px solid hsla(var(--hue), 90%, 65%, 1);
+            box-shadow: 0 0 80px hsla(var(--hue), 90%, 60%, 0.4);
+        }
+
+        /* شريط التقدم */
+        .progress-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 20;
+            padding: 8px 12px 0 12px;
+            background: transparent;
+            display: none;
+        }
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), hsla(var(--hue), 90%, 65%, 1));
+            transition: width 0.5s ease-out;
+            border-radius: 10px;
+        }
+
+        /* العناصر */
+        .brand-name {
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 900;
+            background: linear-gradient(to right, #f37a09, #fcf6ba, #b38728, #49d668, #807ad4);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0px 4px 15px rgba(243, 146, 19, 0.4);
+            letter-spacing: 1px;
+            display: inline-block;
+            margin: 5px auto;
+            animation: shine-brand 4s linear infinite;
             text-align: center;
-            outline: none;
-            transition: all 0.2s;
+        }
+        @keyframes shine-brand {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .welcome-input:focus { border-color: var(--gold); box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); }
+        .rect-img-container {
+            position: relative;
+            width: min(180px, 45vw);
+            height: min(250px, 60vw);
+            max-width: 200px;
+            max-height: 280px;
+            margin: 0 auto 15px auto;
+            border-radius: 24px;
+            background: var(--bg-body-1);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            flex-shrink: 0;
+        }
+        .rect-img-container::before {
+            content: "";
+            position: absolute;
+            width: 600px;
+            height: 700px;
+            background: conic-gradient(transparent, transparent, transparent, #fbbf24, var(--primary), #fbbf24);
+            animation: spin-border 4s linear infinite;
+        }
+        @keyframes spin-border { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .rect-img-container img { 
+            position: relative; 
+            width: calc(100% - 8px); 
+            height: calc(100% - 8px); 
+            border-radius: 20px; 
+            object-fit: cover; 
+            z-index: 1; 
+        }
 
-        .btn-start {
-            background: linear-gradient(to bottom, #dc2626, #991b1b);
+        h1, h2, h3 { text-align: center; font-weight: 900; line-height: 1.4; }
+        .title { font-size: clamp(1.6rem, 5vw, 2.5rem); margin-bottom: 5px; background: linear-gradient(to left, #fff, #93c5fd); -webkit-background-clip: text; color: transparent; text-align: center; }
+        
+        .input-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            width: 100%; 
+            max-width: 500px; 
+            margin: 0 auto; 
+        }
+        .input-group label { 
+            font-size: 1.1rem; 
+            color: var(--text-muted); 
+            font-weight: 800; 
+            text-align: center; 
+        }
+        .input-group input { 
+            background: rgba(0, 0, 0, 0.5); 
+            border: 2px solid rgba(255,255,255,0.2); 
+            color: white; 
+            padding: 18px; 
+            border-radius: 16px; 
+            font-size: 1.1rem; 
+            outline: none; 
+            transition: 0.3s; 
+            font-family: inherit; 
+            font-weight: 700;
+            text-align: center;
+            width: 100%;
+        }
+        .input-group input:focus { 
+            border-color: hsla(var(--hue), 80%, 60%, 1); 
+            box-shadow: 0 0 25px hsla(var(--hue), 80%, 60%, 0.5); 
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, hsla(var(--hue), 80%, 50%, 1));
             color: white;
-            padding: 16px 60px;
-            border-radius: 14px;
-            font-weight: bold;
             border: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 900;
             cursor: pointer;
-            font-size: 20px;
-            box-shadow: 0 12px 30px rgba(220, 38, 38, 0.4);
-            transition: all 0.3s;
+            transition: 0.3s;
+            box-shadow: 0 8px 30px hsla(var(--hue), 80%, 50%, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            touch-action: manipulation;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-primary:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none; opacity: 0.7; }
+        .btn-whatsapp { background: linear-gradient(135deg, #10b981, #059669); }
+        .btn-review { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .btn-restart { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+
+        /* كارت الإهداء */
+        .dedication-content { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            width: 100%;
+            height: 100%; 
+            text-align: center; 
+            gap: 15px;
+        }
+        .dedication-title { 
+            font-size: clamp(2rem, 6vw, 3.5rem); 
+            font-weight: 900; 
+            background: linear-gradient(45deg, #fbbf24, #f59e0b, #ef4444, #ec4899, #8b5cf6); 
+            background-size: 300%; 
+            -webkit-background-clip: text; 
+            color: transparent; 
+            animation: gradient-flow 5s ease infinite; 
+            text-align: center;
+        }
+        @keyframes gradient-flow { 
+            0% { background-position: 0% 50%; } 
+            50% { background-position: 100% 50%; } 
+            100% { background-position: 0% 50%; } 
+        }
+        
+        .dedication-section { 
+            width: 100%; 
+            background: rgba(0,0,0,0.4); 
+            padding: 20px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            margin-bottom: 10px; 
+            opacity: 0; 
+            animation: fadeUp 1s forwards;
+        }
+        .ded-delay-1 { animation-delay: 0.5s; }
+        .ded-delay-2 { animation-delay: 1.5s; }
+        
+        .ded-label { 
+            color: #bae6fd; 
+            font-size: 1rem; 
+            font-weight: 700; 
+            margin-bottom: 8px; 
+            text-align: center;
+        }
+        .name-highlight { 
+            color: #fbbf24; 
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.6); 
+            font-size: clamp(1.2rem, 4vw, 1.8rem); 
+            font-weight: 900; 
+            display: block; 
+            margin: 5px 0;
+            text-align: center;
+        }
+        
+        .dedication-timer-box { 
+            margin-top: 15px; 
+            padding: 12px 25px; 
+            background: rgba(59,130,246,0.2); 
+            border-radius: 30px; 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            border: 1px solid var(--primary);
+            text-align: center;
+        }
+        @keyframes fadeUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
         }
 
-        .btn-start:hover { transform: translateY(-4px); box-shadow: 0 15px 35px rgba(220, 38, 38, 0.5); }
+        /* الأسئلة */
+        .question-meta { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            font-size: 0.9rem; 
+            color: #cbd5e1; 
+            font-weight: 800; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            padding-bottom: 10px; 
+            flex-wrap: wrap; 
+            gap: 8px;
+            width: 100%;
+        }
+        .timer-badge { 
+            background: rgba(0,0,0,0.5); 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.2); 
+            display: flex; 
+            gap: 6px; 
+            align-items: center; 
+            font-weight: 900; 
+        }
+        .timer-danger { 
+            color: #fca5a5; 
+            border-color: var(--danger); 
+            animation: pulse-danger 1s infinite; 
+        }
+        @keyframes pulse-danger { 
+            0% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); } 
+            50% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.5); } 
+            100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); } 
+        }
+        
+        .question-text { 
+            font-size: clamp(1.1rem, 4vw, 1.5rem); 
+            font-weight: 800; 
+            line-height: 1.6; 
+            text-align: center; 
+            margin-top: 5px; 
+            width: 100%;
+        }
+        
+        .code-block { 
+            background: #020617; 
+            border-left: 5px solid hsla(var(--hue), 80%, 60%, 1); 
+            padding: 12px; 
+            border-radius: 12px; 
+            font-family: monospace; 
+            font-size: 0.9rem; 
+            direction: ltr; 
+            text-align: left; 
+            white-space: pre-wrap; 
+            word-break: break-word;
+            color: #38bdf8; 
+            margin-bottom: 10px; 
+            width: 100%;
+        }
+        
+        .options-grid { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            margin-top: 5px; 
+            width: 100%;
+        }
+        .option-btn { 
+            background: rgba(255, 255, 255, 0.03); 
+            border: 2px solid rgba(255, 255, 255, 0.1); 
+            padding: 12px; 
+            border-radius: 14px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            text-align: right; 
+            font-size: 1rem; 
+            font-weight: 700; 
+            color: #f1f5f9; 
+            min-height: 55px;
+            width: 100%;
+        }
+        .option-letter { 
+            width: 34px; 
+            height: 34px; 
+            border-radius: 50%; 
+            background: rgba(255,255,255,0.15); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            font-size: 1rem; 
+            flex-shrink: 0; 
+        }
+        .option-btn.correct { background: rgba(16, 185, 129, 0.2); border-color: var(--success); }
+        .option-btn.correct .option-letter { background: var(--success); }
+        .option-btn.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); }
+        .option-btn.wrong .option-letter { background: var(--danger); }
+        .option-btn.disabled { pointer-events: none; opacity: 0.7; }
 
-        .top-bar {
-            position: sticky; top: 0; backdrop-filter: blur(12px);
-            background: rgba(10, 15, 30, 0.8); height: 64px;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 32px; z-index: 100; border-bottom: 1px solid var(--border);
+        /* النتائج */
+        .links-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+            gap: 10px; 
+            margin-top: 15px; 
+            direction: ltr; 
+            width: 100%;
+        }
+        .link-item { 
+            background: rgba(0,0,0,0.4); 
+            padding: 10px; 
+            border-radius: 12px; 
+            text-align: center; 
+            text-decoration: none; 
+            color: #60a5fa; 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            transition: 0.3s;
+        }
+        .link-item:active { background: hsla(var(--hue), 80%, 60%, 1); color: white; transform: scale(0.98); }
+        
+        .score-circle { 
+            width: min(160px, 40vw); 
+            height: min(160px, 40vw); 
+            border-radius: 50%; 
+            background: conic-gradient(var(--primary) calc(var(--percentage) * 1%), rgba(255,255,255,0.1) 0); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin: 15px auto; 
+            position: relative; 
+        }
+        .score-circle::before { 
+            content: ""; 
+            position: absolute; 
+            width: 75%; 
+            height: 75%; 
+            background: var(--card-bg); 
+            border-radius: 50%; 
+        }
+        .score-value { 
+            position: relative; 
+            z-index: 1; 
+            font-size: clamp(2rem, 6vw, 2.8rem); 
+            font-weight: 900; 
         }
 
-        .timer { font-family: 'Fira Code', monospace; color: var(--gold); font-size: 26px; font-weight: bold; }
-
-        .progress-container { width: 100%; height: 8px; background: #111827; }
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(to right, #dc2626, #f59e0b, #10b981); transition: width 0.3s ease; }
-
-        .code-block {
-            direction: ltr; background: #0d1117; color: #f87171; border: 1px solid var(--border);
-            padding: 20px; border-radius: 12px; font-family: 'Fira Code', monospace; font-size: 14px;
-            margin: 20px 0; line-height: 1.6; overflow-x: auto;
+        /* الأخطاء */
+        .mistake-item { 
+            background: rgba(0,0,0,0.3); 
+            padding: 15px; 
+            border-radius: 16px; 
+            border-right: 4px solid var(--danger); 
+            width: 100%;
+            text-align: center;
+        }
+        .mistake-ans { padding: 6px 0; font-size: 0.9rem; text-align: center; }
+        .m-wrong { color: #fca5a5; }
+        .m-correct { color: #86efac; }
+        .m-hint { 
+            margin-top: 8px; 
+            padding: 8px; 
+            background: rgba(251,191,36,0.1); 
+            border-radius: 12px; 
+            font-size: 0.85rem;
+            text-align: center;
         }
 
-        .choice {
-            background: var(--choice); border-radius: 18px; padding: 18px;
-            display: flex; align-items: center; gap: 16px; cursor: pointer;
-            transition: all 0.2s; border: 1px solid transparent; text-align: right; width: 100%;
+        @media (max-width: 480px) {
+            .card { padding: 14px; gap: 10px; }
+            .option-btn { padding: 10px; min-height: 50px; }
+            .btn-primary { padding: 14px; font-size: 1rem; }
         }
-
-        .choice:hover { background: var(--choice-hover); transform: translateY(-3px); }
-
-        .choice-letter {
-            width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-            border-radius: 10px; font-weight: bold; color: white; flex-shrink: 0;
-        }
-
-        .choice-a .choice-letter { background: linear-gradient(to bottom, #dc2626, #b91c1c); box-shadow: 0 4px 12px rgba(220,38,38,0.4); }
-        .choice-b .choice-letter { background: linear-gradient(to bottom, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245,158,11,0.4); }
-        .choice-c .choice-letter { background: linear-gradient(to bottom, #10b981, #059669); box-shadow: 0 4px 12px rgba(16,185,129,0.4); }
-        .choice-d .choice-letter { background: linear-gradient(to bottom, #8b5cf6, #7c3aed); box-shadow: 0 4px 12px rgba(139,92,246,0.4); }
-
-        .choice-a { border-right: 6px solid #dc2626; }
-        .choice-b { border-right: 6px solid #f59e0b; }
-        .choice-c { border-right: 6px solid #10b981; }
-        .choice-d { border-right: 6px solid #8b5cf6; }
-
-        .choice.correct { background: rgba(16, 185, 129, 0.25) !important; border: 2px solid #10b981 !important; color: white !important; }
-        .choice.wrong { background: rgba(239, 68, 68, 0.2) !important; border: 2px solid #ef4444 !important; }
-
-        .results-circle {
-            width: 200px; height: 200px; border-radius: 50%; border: 10px solid #dc2626;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            margin: 0 auto 32px; font-weight: bold; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-
-        .score { font-size: 54px; color: white; line-height: 1; }
-
-        .whatsapp-btn {
-            background: #25d366; color: white; padding: 14px 40px; border-radius: 35px;
-            text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 12px;
-            margin-top: 24px; transition: all 0.3s; font-size: 18px;
-        }
-
-        .whatsapp-btn:hover { background: #20bd5c; transform: scale(1.05); }
-
-        .review-card {
-            background: rgba(255, 255, 255, 0.03); border-radius: 16px; padding: 24px;
-            border-right: 6px solid #3b4e6b; margin-bottom: 20px; transition: all 0.2s;
-        }
-
-        .screen { display: none; min-height: 100vh; width: 100%; padding-bottom: 50px; }
-        .screen.active { display: block; animation: fadeIn 0.6s ease-out; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: var(--bg); }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
     </style>
 </head>
-<body class="custom-scrollbar">
+<body>
 
-    <!-- Welcome Screen -->
-    <div id="welcome-screen" class="screen active">
-        <div class="flex flex-col items-center justify-center min-h-screen px-6 py-12">
-            <div class="designer-card mb-8">
-                <img src="https://cdn.jsdelivr.net/gh/mhshahen6/mh_photo@main/1770841296798.webp" class="designer-img" alt="Engineer">
-                <h2 class="text-2xl font-bold text-white">المهندس محمد محمود شاهين</h2>
-                <p class="text-[#f59e0b] font-bold mb-6">خبير البرمجة والذكاء الاصطناعي بالتربية والتعليم</p>
-                <div class="flex flex-wrap justify-center">
-                    <a href="#" class="social-btn"><i data-lucide="globe"></i> المدونة</a>
-                    <a href="#" class="social-btn"><i data-lucide="facebook"></i> كيريو</a>
-                    <a href="#" class="social-btn"><i data-lucide="user"></i> السيرة الذاتية</a>
-                    <a href="#" class="social-btn"><i data-lucide="file-text"></i> الاختبارات</a>
-                    <a href="#" class="social-btn"><i data-lucide="laptop"></i> البوابة</a>
-                </div>
-            </div>
+    <div class="bg-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
 
-            <div class="text-center w-full max-w-lg">
-                <h1 class="text-3xl md:text-4xl font-black text-white mb-4">نظام الاختبارات التفاعلي المطور</h1>
-                <p class="text-lg opacity-70 mb-8">يرجى إدخال اسمك الرباعي للمتابعة (الاختبار من 40 سؤالاً)</p>
-                <div class="flex flex-col items-center gap-6">
-                    <input type="text" id="user-name-input" class="welcome-input" placeholder="اسم الطالب الكامل">
-                    <button class="btn-start" onclick="startExam()">ابدأ التحدي الآن</button>
-                </div>
-            </div>
-        </div>
+    <div class="progress-wrapper" id="progressWrapper">
+        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
     </div>
 
-    <!-- Exam Screen -->
-    <div id="exam-screen" class="screen">
-        <div class="top-bar">
-            <div class="bg-[#dc2626]/20 border border-[#dc2626] text-white px-5 py-2 rounded-full font-bold text-sm">
-                السؤال: <span id="q-count-display">1</span> / 40
-            </div>
-            <div class="timer" id="timer-display">60:00</div>
-        </div>
-        <div class="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-
-        <div class="max-w-5xl mx-auto px-6 py-12">
-            <div class="bg-[#1e2a3e] rounded-3xl border-2 border-[#3b4e6b] p-8 md:p-12 shadow-2xl">
-                <div id="question-area" class="space-y-8">
-                    <div class="space-y-4">
-                        <span id="q-cat" class="text-[#f59e0b] font-bold uppercase tracking-widest text-sm bg-[#f59e0b]/10 px-4 py-1 rounded-md">برمجة JavaScript</span>
-                        <h2 id="q-text" class="text-2xl md:text-3xl font-bold text-white leading-tight">...</h2>
-                    </div>
-                    
-                    <div id="code-container" class="hidden">
-                        <div class="code-block" id="code-area"></div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4" id="choices-grid">
-                        <!-- Choices injected via JS -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Results Screen -->
-    <div id="results-screen" class="screen">
-        <div class="max-w-4xl mx-auto px-6 py-16 flex flex-col items-center">
-            <div class="text-center w-full mb-16">
-                <h1 class="text-4xl font-black text-white mb-10">نتائج الاختبار</h1>
-                <div class="results-circle">
-                    <span class="text-xs opacity-60 uppercase tracking-widest mb-1">النتيجة النهائية</span>
-                    <span class="score" id="final-score-display">0/40</span>
-                    <span class="text-[#f59e0b] text-xl font-bold" id="final-percent-display">0%</span>
-                </div>
-                <p class="text-2xl font-bold text-[#e8edf5] mb-8">أحسنت يا <span id="display-name" class="text-[#f59e0b]">...</span>! لقد أتممت الاختبار بنجاح.</p>
-                <a href="#" id="whatsapp-share" target="_blank" class="whatsapp-btn">
-                    <i data-lucide="send"></i> إرسال النتيجة للمعلم عبر واتساب
-                </a>
-            </div>
-
-            <div class="w-full space-y-8">
-                <h3 class="text-2xl font-bold text-white border-r-6 border-[#f59e0b] pr-4">مراجعة الأسئلة</h3>
-                <div id="review-list" class="space-y-6">
-                    <!-- Review items injected via JS -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <footer class="text-center py-10 opacity-30 text-xs text-white">
-        © جميع الحقوق محفوظة - تطوير المهندس محمد شاهين
-    </footer>
+    <div id="app-container"></div>
 
     <script>
-        // --- Questions Data ---
-        const QUESTIONS = [
-          { id: 1, cat: 'if / else if', q: 'ما الناتج المتوقع عند تنفيذ الكود التالي؟', code: `let grade = 66;\nif (grade >= 90) {\n  console.log("ممتاز");\n} else if (grade >= 80) {\n  console.log("جيد جداً");\n} else if (grade >= 70) {\n  console.log("جيد");\n} else if (grade >= 60) {\n  console.log("ناجح");\n} else {\n  console.log("راسب");\n}`, choices: ['ممتاز', 'جيد', 'ناجح', 'راسب'], ans: 2, explain: 'الدرجة 66 تحقق الشرط (>= 60) لذلك الناتج هو "ناجح".' },
-          { id: 2, cat: 'for loop', q: 'كم مرة ستتم طباعة كلمة "محاولة"؟', code: `for (let count = 1; count <= 7; count += 2) {\n  console.log("محاولة");\n}`, choices: ['7 مرات', '4 مرات', '3 مرات', 'مرتان'], ans: 1, explain: 'القيم هي: 1 ثم 3 ثم 5 ثم 7، إذن التنفيذ يتم 4 مرات.' },
-          { id: 3, cat: 'Arrays', q: 'ما الناتج الذي سيتم طباعته عند طلب العنصر رقم 2؟', code: `let names = ["علي", "سارة", "محمود", "نور"];\nconsole.log(names[2]);`, choices: ['علي', 'سارة', 'محمود', 'نور'], ans: 2, explain: 'الفهرسة تبدأ من 0 (علي=0، سارة=1، محمود=2).' },
-          { id: 4, cat: 'Variables', q: 'ما القيمة النهائية للمتغير مجموع (sum)؟', code: `let sum = 15;\nsum = sum + 10;\nsum += 5;\nconsole.log(sum);`, choices: ['15', '25', '30', '35'], ans: 2, explain: '15 + 10 = 25، ثم 25 + 5 = 30.' },
-          { id: 5, cat: 'Logical Operators', q: 'ما الناتج المتوقع من فحص الشروط؟', code: `let age = 17;\nlet permit = true;\nif (age >= 18 || permit === true) {\n  console.log("مسموح");\n} else {\n  console.log("مرفوض");\n}`, choices: ['مسموح', 'مرفوض', 'خطأ برمي', 'لا شيء'], ans: 0, explain: 'بسبب استخدام عامل OR (||)، وجود تصريح (permit=true) يكفي لتحقيق الشرط.' },
-          { id: 6, cat: 'Arrays + Loop', q: 'ما القيمة النهائية للمتغير مجموع الأرقام؟', code: `let numbers = [2, 4, 6];\nlet sum = 0;\nfor (let index = 0; index < numbers.length; index++) {\n  sum += numbers[index];\n}\nconsole.log(sum);`, choices: ['6', '10', '12', '14'], ans: 2, explain: '2 + 4 + 6 = 12 مجمموعة داخل الحلقة.' },
-          { id: 7, cat: 'Nested if', q: 'ما الناتج الذي سيطبع في Console؟', code: `let grade = 95;\nlet rank = 1;\nif (grade >= 90) {\n  if (rank === 1) {\n    console.log("الأول وممتاز");\n  }\n}`, choices: ['الأول وممتاز', 'ممتاز فقط', 'لا شيء', 'خطأ'], ans: 0, explain: 'الشرطين الخارجي والداخلي محققان (95 >= 90 و 1 === 1).' },
-          { id: 8, cat: 'Array length', q: 'ما القيمة المطبوعة التي تعبر عن طول المصفوفة؟', code: `let students = ["أحمد", "منى", "ياسر"];\nconsole.log(students.length);`, choices: ['2', '3', '4', '0'], ans: 1, explain: 'تحتوي المصفوفة على 3 عناصر، لذا الطول هو 3.' },
-          { id: 9, cat: 'for + if', q: 'كم مرة سيتم طباعة كلمة "توقف"؟', code: `for (let num = 1; num < 5; num++) {\n  if (num === 3) {\n    console.log("توقف");\n  }\n}`, choices: ['مرة واحدة', 'مرتان', '4 مرات', 'لن يطبع'], ans: 0, explain: 'القيمة 3 تمر مرة واحدة فقط داخل السلسلة من 1 إلى 4.' },
-          { id: 10, cat: 'String + Number', q: 'ما الناتج المتوقع عند دمج نص مع رقم؟', code: `let num = "20";\nconsole.log(num + 5);`, choices: ['25', '"25"', '"205"', 'NaN'], ans: 2, explain: 'الجمع (+) مع النصوص يقوم بالدمج (Concatenation) وليس الجمع الرياضي.' },
-          { id: 11, cat: 'Functions', q: 'ما ناتج استدعاء الدالة calculate(3, 4)؟', code: `function calculate(a, b) {\n  return a + b;\n}\nconsole.log(calculate(3, 4));`, choices: ['34', '7', 'undefined', 'خطأ'], ans: 1, explain: 'الدالة تعيد ناتج جمع المعاملين (3 + 4 = 7).' },
-          { id: 12, cat: 'Functions return', q: 'ما الناتج المطبوع عند غياب return؟', code: `function calculate() {\n  let result = 10;\n}\nconsole.log(calculate());`, choices: ['10', 'null', 'undefined', 'خطأ'], ans: 2, explain: 'في حال عدم وجود return، تعيد الدالة JavaSript القيمة undefined افتراضياً.' },
-          { id: 13, cat: 'Scope', q: 'ماذا سيحدث عند محاولة الوصول لمتغير الـ Block؟', code: `if (true) {\n  let value = 20;\n}\nconsole.log(value);`, choices: ['20', 'undefined', 'ReferenceError', '0'], ans: 2, explain: 'المتغير المعرف بـ let داخل Block لا يمكن الوصول إليه من خارجه.' },
-          { id: 14, cat: 'for loop', q: 'ما تسلسل الأرقام الذي سيتم طباعته؟', code: `for (let num = 0; num < 3; num++) {\n  console.log(num);\n}`, choices: ['0 1 2', '1 2 3', '0 1 2 3', '1 2'], ans: 0, explain: 'تبدأi=0 وتتوقف قبل أن تصل لـ 3 (0، 1، 2).' },
-          { id: 15, cat: 'Array index', q: 'أي سطر كود سيطبع اللون "أخضر"؟', code: `let colors = ["أحمر", "أزرق", "أخضر"];`, choices: ['colors[1]', 'colors[2]', 'colors[3]', 'colors[0]'], ans: 1, explain: 'الفهرس 2 يشير للعنصر الثالث في المصفوفة.' },
-          { id: 16, cat: 'Comparison', q: 'ما الفرق الجوهري بين = و == في البرمجة؟', code: ``, choices: ['لا فرق بينهما', '= للإسناد و == للمقارنة', 'كلاهما للمقارنة', '== للإسناد و = للمقارنة'], ans: 1, explain: 'علامة واحدة هي Assigning، وعلامتان Equal-to Comparison.' },
-          { id: 17, cat: 'Random', q: 'أي كود يولد رقمًا صحيحًا عشوائياً من 0 إلى 9؟', code: ``, choices: ['Math.random(10)', 'Math.floor(Math.random() * 10)', 'Math.floor(Math.random()) * 10', 'Math.round(10)'], ans: 1, explain: 'نضرب في المدى ثم نستخدم floor لإسقاط الأجزاء العشرية.' },
-          { id: 18, cat: 'for...of', q: 'ما الطفرة الصحيحة لعمل حلقة دوران على عناصر مصفوفة؟', code: `let names = ["علي", "نور"];`, choices: ['for (let n in names)', 'for (let n of names)', 'for (let n = names)', 'for index of names'], ans: 1, explain: 'for...of تستخرج القيم مباشرة من المصفوفات.' },
-          { id: 19, cat: 'Nested loop', q: 'كم عدد النجوم الكلي التي سيتم طباعتها؟', code: `for (let i = 0; i < 3; i++) {\n  for (let j = 0; j < 2; j++) {\n    console.log("*");\n  }\n}`, choices: ['2', '3', '5', '6'], ans: 3, explain: 'نضرب عدد دورات الحلقة الخارجية في الداخل (3 × 2 = 6).' },
-          { id: 20, cat: 'Debugging', q: 'ما المشكلة في الكود البرمجي التالي؟', code: `for (let i = 0; i < 3; i--) {\n  console.log("فائز");\n}`, choices: ['الشرط خاطئ', 'حلقة لانهائية بسبب i--', 'يجب استخدام const', 'الدالة i ناقصة'], ans: 1, explain: 'استخدام i-- يجعل القيمة تتناقص ولا تصل أبداً لكسر شرط i < 3.' },
-          { id: 21, cat: 'if logic', q: 'ما الناتج المتوقع لـ age = 15؟', code: `let age = 15;\nif (age > 18) {\n  console.log("بالغ");\n} else {\n  console.log("قاصر");\n}`, choices: ['بالغ', 'قاصر', 'undefined', 'خطأ'], ans: 1, explain: 'الشرط 15 > 18 خاطئ فينفذ كود الـ else.' },
-          { id: 22, cat: 'Array length', q: 'ما طول المصفوفة [10, 20, 30, 40]؟', code: `let grades = [10, 20, 30, 40];`, choices: ['3', '4', '5', '10'], ans: 1, explain: 'المصفوفة تحتوى على 4 عناصر بالضبط.' },
-          { id: 23, cat: 'for sum', q: 'ما ناتج جمع الأرقام من 1 إلى 3؟', code: `let sum = 0;\nfor (let n = 1; n <= 3; n++) {\n  sum += n;\n}`, choices: ['3', '5', '6', '7'], ans: 2, explain: '1 + 2 + 3 = 6.' },
-          { id: 24, cat: 'Boolean', q: 'ماذا سيطبع الكود الشرطي؟', code: `let res = 92;\nlet att = true;\nif (res >= 90 && att) {\n  console.log("درجة كاملة");\n}`, choices: ['درجة كاملة', 'ناجح', 'فشل', 'لا شيء'], ans: 0, explain: 'الشرطان (92 >= 90) و (true) كلاهما محققان.' },
-          { id: 25, cat: 'Environment', q: 'ماذا سيحدث لمخرجات console.log(x)؟', code: `function f() {\n  let x = 100;\n}\nconsole.log(x);`, choices: ['100', 'ReferenceError', 'undefined', '0'], ans: 1, explain: 'x غير معرف خارج نطاق الدالة (Local Scope).' },
-          { id: 26, cat: 'Math', q: 'ما ناتج استدعاء sum(5, 2)؟', code: `function sum(x, y) {\n  return x + y;\n}`, choices: ['52', '7', 'NaN', 'undefined'], ans: 1, explain: '5 + 2 = 7.' },
-          { id: 27, cat: 'Loop limits', q: 'ما هي الأرقام المطبوعة؟', code: `for (let i = 2; i < 5; i++) {\n  console.log(i);\n}`, choices: ['2 3 4', '1 2 3', '2 3 4 5', '2 5'], ans: 0, explain: 'يبدأ من 2 وينتهي قبل 5 (2، 3، 4).' },
-          { id: 28, cat: 'Index', q: 'أي سطر سيطبع الكلمة الأخيرة "علوم"؟', code: `let labels = ["عربي", "رياضيات", "علوم"];`, choices: ['labels[1]', 'labels[2]', 'labels[3]', 'labels.last'], ans: 1, explain: 'كلمة علوم تقع في الفهرس رقم 2 (العد يبدأ من الصفر).' },
-          { id: 29, cat: 'Datatypes', q: 'ما ناتج "5" + 3 في JS؟', code: ``, choices: ['8', '53', '15', 'Error'], ans: 1, explain: 'عامل + مع نص يقوم بدمج القيم، فتصبح 53.' },
-          { id: 30, cat: 'Typeof', q: 'ما هو نوع البيانات (typeof) المتوقع للطرح؟', code: `let v = "100" - 10;`, choices: ['string', 'number', 'boolean', 'NaN'], ans: 1, explain: 'عامل الطرح (-) يحاول تحويل النصوص إلى أرقام، فالناتج 90 ونوعه number.' },
-          { id: 31, cat: 'Iterations', q: 'أي جملة تكرار صحيحة لطباعة الأسماء؟', code: ``, choices: ['for (let n of arr)', 'for (let n in of arr)', 'for n in arr', 'iterate n through arr'], ans: 0, explain: 'استخدام of هو المعياري للمصفوفات (Arrays).' },
-          { id: 32, cat: 'Infinite loops', q: 'ما المشكلة البرمجية هنا؟', code: `for (let i = 0; i < 5; i--) { ... }`, choices: ['نقص المتغير i', 'حلقة لانهائية', 'خطأ في الأقواس', 'لا توجد مشكلة'], ans: 1, explain: 'i ستقل للأبد عن 5 ولن تنتهي الحلقة.' },
-          { id: 33, cat: 'Logical AND', q: 'ما الناتج المتوقع؟', code: `let g = 85; let a = true;\nif (g >= 80 && a) { ... }`, choices: ['تحقق الشرط', 'لم يتحقق', 'خطأ', 'undefined'], ans: 0, explain: 'كل من g >= 80 و a=true قيم صائبة.' },
-          { id: 34, cat: 'Nested Iterations', q: 'كم عدد دورات الحلقة الكلي؟', code: `for(let i=0; i<2; i++) for(let j=0; j<3; j++) print("*");`, choices: ['5', '6', '3', '2'], ans: 1, explain: '2 × 3 = 6 دورات.' },
-          { id: 35, cat: 'Update values', q: 'ما الناتج المطبوع بعد التعديل؟', code: `let n = [1, 2, 3]; n[1] = 10; console.log(n[1]);`, choices: ['2', '3', '10', '1'], ans: 2, explain: 'تم استبدال القيمة عند الفهرس 1 (وهي 2) بـ 10.' },
-          { id: 36, cat: 'Return effect', q: 'ماذا سيتم طباعته في الأولوية؟', code: `function c() { return "تم"; console.log("x"); }`, choices: ['تم فقط', 'تم وبجانبها x', 'x فقط', 'لا شيء'], ans: 0, explain: 'أي كود بعد كلمة return لا ينفذ نهائياً.' },
-          { id: 37, cat: 'Math Floor', q: 'كيف ننتج رقم عشوائي من 1 لـ 5؟', code: ``, choices: ['Math.floor(Math.random()*5)+1', 'Math.random(5)', 'random(1,5)', 'Math.floor(random)'], ans: 0, explain: 'نضرب في 5 (0-4.9) ثم ننقص الأجزاء ونضيف 1 لتصبح من 1-5.' },
-          { id: 38, cat: 'HTML tags', q: 'ما الوسم الصحيح لإدراج صورة؟', code: ``, choices: ['<a>', '<img>', '<div>', '<p>'], ans: 1, explain: 'تم تصميم وسم img خصيصاً للصور.' },
-          { id: 39, cat: 'Selectors', q: 'كيف نستهدف class باسم "box" في CSS؟', code: ``, choices: ['#box', '.box', 'box', '@box'], ans: 1, explain: 'النقطة (.) ترمز للـ classes في لغة Stylesheet.' },
-          { id: 40, cat: 'Links', q: 'ما هي الخاصية (Attribute) التي تحدد مسار الرابط؟', code: ``, choices: ['src', 'href', 'alt', 'data'], ans: 1, explain: 'حقل href هو المسؤول عن تحديد الوجهة في روابط <a>.' },
+        // ================= الأسئلة الـ 50 الكاملة =================
+        const quizData = [
+            { skill: "تحليل الكود (Type Coercion)", text: "ما هو الناتج الدقيق لعملية الجمع والضرب المختلطة في لغة JavaScript، بناءً على أولويات التنفيذ والتحويل الضمني (Type Coercion)؟", code: "console.log(\"10\" + 5 * 2);", options:[{t:"\"1010\"",id:"A"},{t:"20",id:"B"},{t:"\"20\"",id:"C"},{t:"NaN",id:"D"}], ans: "A", hint: "عملية الضرب تُنفذ أولاً (5*2=10)، ثم يتم دمج الناتج كنص مع السلسلة \"10\"." },
+            { skill: "Debugging (Logical Trap)", text: "في الكود التالي، يتم استخدام معامل التخصيص داخل جملة الشرط. ماذا ستكون النتيجة المطبوعة على الشاشة؟", code: "let power = 50;\nif (power = 100) {\n  console.log(\"Max Power\");\n} else {\n  console.log(\"Low Power\");\n}", options:[{t:"يطبع \"Low Power\" لأن 50 لا تساوي 100",id:"A"},{t:"ينتج خطأ (SyntaxError) لمنع استخدام = داخل if",id:"B"},{t:"يطبع \"Max Power\" لأن عملية الإسناد تعيد 100 وهي قيمة صحيحة (Truthy)",id:"C"},{t:"لا يطبع شيئاً",id:"D"}], ans: "C", hint: "المعامل = هو للإسناد وليس للمقارنة، والقيمة 100 تُعتبر True." },
+            { skill: "تحليل النطاق (Scope Logic)", text: "ما هو ناتج تنفيذ الكود التالي الخاص بنطاق المتغيرات (Scope)؟", code: "let x = 10;\nif (x === 10) {\n  let x = 20;\n}\nconsole.log(x);", options:[{t:"20",id:"A"},{t:"10",id:"B"},{t:"undefined",id:"C"},{t:"ReferenceError",id:"D"}], ans: "B", hint: "المتغير المُعرف بـ let داخل الأقواس له نطاق كتلة (Block Scope) ولا يؤثر على المتغير الخارجي." },
+            { skill: "الاستنتاج (Short-circuiting)", text: "كيف سيتعامل مترجم JavaScript مع التقييم قصير المدى (Short-circuit) في التعبير المنطقي التالي؟", code: "console.log(false && (10 / 0 === 0));", options:[{t:"يطبع true",id:"A"},{t:"ينتج خطأ قسمة على صفر",id:"B"},{t:"يطبع NaN",id:"C"},{t:"يطبع false مباشرة دون قراءة الطرف الثاني",id:"D"}], ans: "D", hint: "معامل && يتوقف عن التقييم فوراً إذا كان الطرف الأول false." },
+            { skill: "AI Thinking (مفاهيم متقدمة)", text: "أي من الجمل التالية يعتبر الوصف الأدق للفرق بين الذكاء الاصطناعي التوليدي (Generative AI) وقواعد البيانات التقليدية؟", code: "", options:[{t:"كلاهما يخزن الحقائق لاسترجاعها لاحقاً",id:"A"},{t:"الذكاء التوليدي يتنبأ بالكلمة الأكثر احتمالية بناءً على الأنماط، بينما قاعدة البيانات تسترجع حقائق مسجلة",id:"B"},{t:"الذكاء التوليدي يعتمد على لغة HTML لعرض النتائج",id:"C"},{t:"قواعد البيانات تمتلك وعياً مستقلاً وتتخذ قرارات عاطفية",id:"D"}], ans: "B", hint: "النماذج التوليدية لا تدرك الحقائق بل تبني تسلسلات احتمالية." },
+            { skill: "Problem Solving (Loop Traps)", text: "تم تصميم خوارزمية للعد التنازلي. ما هو الخطأ القاتل الذي سيؤدي إلى حلقة لا نهائية (Infinite Loop) في الكود التالي؟", code: "for(let i = 10; i > 0; i++) {\n  console.log(i);\n}", options:[{t:"الشرط i > 0 خاطئ",id:"A"},{t:"استخدام معامل الزيادة i++ بدلاً من معامل النقصان i--",id:"B"},{t:"عدم تعريف i كـ const",id:"C"},{t:"لا يوجد خطأ",id:"D"}], ans: "B", hint: "العداد يزداد (11, 12, 13...) ولن يصل أبداً إلى الصفر لكسر الشرط." },
+            { skill: "تتبع المصفوفات (Array Behavior)", text: "في المصفوفات، ماذا سيطبع الكود التالي عند محاولة الوصول لفهرس غير موجود؟", code: "let data =[1, 2];\ndata[3] = 50;\nconsole.log(data.length);", options:[{t:"2",id:"A"},{t:"3",id:"B"},{t:"6",id:"C"},{t:"Error",id:"D"}], ans: "C", hint: "عند إسناد قيمة في فهرس متجاوز، تتوسع المصفوفة تلقائياً وتملأ الفجوات بـ empty/undefined." },
+            { skill: "المنطق البرمجي (Control Flow)", text: "كيف سيُقيم المتصفح الشروط المتداخلة التالية إذا كانت درجة الطالب 95؟", code: "let score = 95;\nif(score > 50) { console.log(\"Pass\"); }\nelse if(score > 90) { console.log(\"Excellent\"); }", options:[{t:"يطبع \"Pass\" و \"Excellent\" معاً",id:"A"},{t:"يطبع \"Excellent\" فقط",id:"B"},{t:"يطبع \"Pass\" ويتجاهل باقي الشروط تماماً",id:"C"},{t:"ينتج خطأ بسبب التداخل",id:"D"}], ans: "C", hint: "في هيكل if...else if، يتم تنفيذ أول شرط يتحقق فقط." },
+            { skill: "التفكير الحسابي (Mathematical Logic)", text: "تستخدم الدالة Math.random() لتوليد أرقام عشوائية. أي كود يولد بدقة رقماً صحيحاً بين 1 و 5 (شاملاً 1 و 5)؟", code: "", options:[{t:"Math.floor(Math.random() * 5);",id:"A"},{t:"Math.floor(Math.random() * 6) + 1;",id:"B"},{t:"Math.floor(Math.random() * 5) + 1;",id:"C"},{t:"Math.ceil(Math.random() * 4);",id:"D"}], ans: "C", hint: "الضرب في 5 يعطي (0 إلى 4.99)، و floor تزيل الكسر لتصبح (0 إلى 4)، والجمع 1 يجعلها (1 إلى 5)." },
+            { skill: "Debugging (Function Arguments)", text: "ماذا سيحدث عند استدعاء دالة تأخذ وسيطين، وتمرير وسيط واحد فقط لها؟", code: "function calc(a, b) {\n  console.log(a + b);\n}\ncalc(5);", options:[{t:"يطبع 5",id:"A"},{t:"يطبع 0",id:"B"},{t:"يطبع NaN",id:"C"},{t:"ينتج خطأ SyntaxError",id:"D"}], ans: "C", hint: "الوسيط المفقود يصبح undefined، و 5 + undefined ينتج NaN." },
+            { skill: "فهم الخوارزميات (Function Returns)", text: "ماذا يعيد الدالة في JavaScript إذا لم تحتوي على الكلمة المحجوزة `return` صراحة؟", code: "function greet() {\n  let x = \"Hello\";\n}\nconsole.log(greet());", options:[{t:"\"Hello\"",id:"A"},{t:"null",id:"B"},{t:"undefined",id:"C"},{t:"0",id:"D"}], ans: "C", hint: "غياب جملة return يجعل الدالة تعيد undefined كقيمة افتراضية." },
+            { skill: "تحليل نوع البيانات (Data Types)", text: "عند محاولة تحويل سلسلة نصية لا تحتوي على أرقام إلى قيمة رياضية باستخدام معامل (+) الأحادي، ما هو الناتج؟", code: "let val = +\"Apple\";\nconsole.log(val);", options:[{t:"0",id:"A"},{t:"Error",id:"B"},{t:"undefined",id:"C"},{t:"NaN",id:"D"}], ans: "D", hint: "فشل التحويل الرياضي لنص غير رقمي ينتج دائماً Not-a-Number (NaN)." },
+            { skill: "التصميم الرقمي (Digital Representation)", text: "في نظام الألوان الرقمية (RGB)، كم عدد المستويات اللونية المتاحة للون الأساسي الواحد في وضع الألوان الكاملة (Full Color) 24-bit؟", code: "", options:[{t:"16",id:"A"},{t:"256",id:"B"},{t:"1024",id:"C"},{t:"65536",id:"D"}], ans: "B", hint: "كل لون أساسي يشغل 8 بت، مما يوفر 2 أس 8 = 256 مستوى." },
+            { skill: "فهم الشبكات (Networking Protocols)", text: "ما هي وظيفة طبقة بروتوكول TCP في نموذج الاتصالات؟", code: "", options:[{t:"اختيار المسار الأسرع للبيانات",id:"A"},{t:"تحويل اسم النطاق إلى عنوان IP",id:"B"},{t:"تقسيم البيانات إلى حزم، وترتيبها عند الاستلام، وطلب إعادة إرسال المفقود",id:"C"},{t:"إرسال البيانات في الوقت الفعلي دون التحقق من وصولها",id:"D"}], ans: "C", hint: "بروتوكول TCP يضمن موثوقية الاتصال بعكس UDP الذي يركز على السرعة." },
+            { skill: "المفاهيم التكنولوجية (Network Types)", text: "ما الفرق الجوهري بين شبكة LAN وشبكة WAN؟", code: "", options:[{t:"LAN تعتمد على الأقمار الصناعية بينما WAN سلكية فقط",id:"A"},{t:"LAN تغطي منطقة جغرافية محدودة (كمبنى)، بينما WAN تربط بين مناطق جغرافية واسعة (كدول)",id:"B"},{t:"LAN أبطأ دائماً من WAN",id:"C"},{t:"LAN لا تستخدم أجهزة التوجيه (Routers) أبداً",id:"D"}], ans: "B", hint: "تصنيف الشبكات يعتمد بشكل أساسي على النطاق الجغرافي." },
+            { skill: "الهندسة المنطقية (Logic Gates)", text: "أي من البوابات المنطقية (Logic Gates) تعطي مخرجاً صحيحاً (1) فقط عندما تكون جميع مدخلاتها صحيحة (1)؟", code: "", options:[{t:"بوابة OR",id:"A"},{t:"بوابة XOR",id:"B"},{t:"بوابة NOT",id:"C"},{t:"بوابة AND",id:"D"}], ans: "D", hint: "بوابة AND تشترط تحقق جميع الشروط (المدخلات) لتمرير الإشارة." },
+            { skill: "التفكير الحسابي (Binary Arithmetic)", text: "في عملية الطرح الثنائي (Binary Subtraction)، ما هو ناتج 10 - 01 (بالنظام الثنائي)؟", code: "", options:[{t:"01",id:"A"},{t:"11",id:"B"},{t:"10",id:"C"},{t:"00",id:"D"}], ans: "A", hint: "في الثنائي، 10 (تكافئ 2 عشري) ناقص 01 (تكافئ 1 عشري) تساوي 01." },
+            { skill: "نظم المعلومات (DBMS)", text: "تم تصميم قاعدة بيانات مدرسية. أي نوع من قواعد البيانات ينظم البيانات في جداول متعددة مترابطة رياضياً بعلاقات محددة؟", code: "", options:[{t:"الشبكية (Network Database)",id:"A"},{t:"العلائقية (Relational Database)",id:"B"},{t:"الهرمية (Hierarchical Database)",id:"C"},{t:"المسطحة (Flat File Database)",id:"D"}], ans: "B", hint: "قواعد البيانات العلائقية تعتمد على جداول ترتبط ببعضها عبر مفاتيح." },
+            { skill: "تطبيق الويب (HTML Structure)", text: "في لغة HTML، ما هو الوسم والطريقة الصحيحة لإدراج صورة مع تحديد نص بديل ليقرأه قارئ الشاشة؟", code: "", options:[{t:"<img href=\"pic.jpg\" text=\"صورة\">",id:"A"},{t:"<image src=\"pic.jpg\" alt=\"صورة\"></image>",id:"B"},{t:"<img src=\"pic.jpg\" alt=\"صورة\">",id:"C"},{t:"<pic url=\"pic.jpg\" desc=\"صورة\">",id:"D"}], ans: "C", hint: "يُستخدم الوسم المستقل <img> مع الخاصيتين src للمسار و alt للنص البديل." },
+            { skill: "التصميم والتنسيق (CSS Selectors)", text: "كيف يمكنك استهداف جميع العناصر التي تحمل فئة (Class) باسم \"active\" في ملف CSS لتغيير لون النص إلى الأحمر؟", code: "", options:[{t:"#active { color: red; }",id:"A"},{t:"active { color: red; }",id:"B"},{t:".active { text-color: red; }",id:"C"},{t:".active { color: red; }",id:"D"}], ans: "D", hint: "في CSS، يُشار للفئة بالنقطة (.) ولون النص يُغير بالخاصية color." },
+            { skill: "الاستنتاج (CSS Cascading)", text: "وفقاً لقواعد التتالي (Cascading) في CSS، إذا تعارضت قاعدتان بنفس قوة التحديد، أيهما سيتم تطبيقه؟", code: "", options:[{t:"القاعدة التي كُتبت أولاً (في الأعلى)",id:"A"},{t:"القاعدة التي كُتبت آخراً (في الأسفل)",id:"B"},{t:"يتم دمج الألوان عشوائياً",id:"C"},{t:"تُتجاهل كلتا القاعدتين",id:"D"}], ans: "B", hint: "القاعدة الأخيرة في تسلسل الكود تلغي وتستبدل ما سبقها." },
+            { skill: "Debugging (Logical Operators Trap)", text: "ما هو الفخ المنطقي (Logical Trap) في كتابة نطاق المقارنة المزدوجة في JavaScript كما يلي؟", code: "if (10 < x < 20) { console.log(\"True\"); }", options:[{t:"البرنامج سينتج خطأ مباشر",id:"A"},{t:"سيعمل الكود بشكل سليم ويقارن النطاق",id:"B"},{t:"سيُقيم (10 < x) أولاً كـ (true/false) ويقارنها مع 20 مما يعطي دائماً true",id:"C"},{t:"سيتجاهل المتصفح الرقم 20 تماماً",id:"D"}], ans: "C", hint: "الجافاسكريبت تقيم من اليسار لليمين. (true/false) تتحول إلى (1/0)، وكلاهما أصغر من 20." },
+            { skill: "فهم الشبكات (Internet Infrastructure)", text: "يُستخدم نظام (DNS) في شبكات الكمبيوتر للقيام بوظيفة حيوية. ما هي؟", code: "", options:[{t:"مراقبة الفيروسات في الشبكة",id:"A"},{t:"تقسيم البيانات إلى حزم صغيرة",id:"B"},{t:"ترجمة أسماء النطاقات المقروءة إلى عناوين IP رقمية",id:"C"},{t:"تخصيص المساحات التخزينية",id:"D"}], ans: "C", hint: "الـ DNS هو بمثابة \"دليل الهاتف\" للإنترنت الذي يربط الأسماء بالأرقام." },
+            { skill: "الأساسيات (Algorithmic Thinking)", text: "ما هي الخوارزمية (Algorithm) في سياق البرمجة وعلوم الحاسب؟", code: "", options:[{t:"لغة برمجة متقدمة",id:"A"},{t:"قطعة مادية داخل المعالج",id:"B"},{t:"سلسلة خطوات منطقية ومرتبة وإجراءات واضحة لحل مشكلة محددة",id:"C"},{t:"برنامج فيروسي يعطل البيانات",id:"D"}], ans: "C", hint: "الخوارزمية هي المنهجية أو الخطة الدقيقة المكتوبة لحل مشكلة قبل تحويلها لكود." },
+            { skill: "التفكير الحسابي (Flowchart Symbols)", text: "أي شكل هندسي يُستخدم في المخططات الانسيابية لتمثيل نقطة اتخاذ القرار (التفرع / الشروط)؟", code: "", options:[{t:"المستطيل",id:"A"},{t:"الشكل البيضاوي",id:"B"},{t:"متوازي الأضلاع",id:"C"},{t:"المعين (Diamond)",id:"D"}], ans: "D", hint: "المعين يُستخدم لاختبار الشروط (Yes/No) لتوجيه مسار التدفق." },
+            { skill: "تتبع الكود (Loop Arrays)", text: "عند تصميم حلقة تكرارية للبحث داخل مصفوفة تحتوي على 5 عناصر. ما هو شرط التوقف المثالي باستخدام خاصية length؟", code: "for(let i = 0; i <= arr.length; i++)", options:[{t:"يجب استخدام < بدلاً من <= لأن الفهارس تبدأ من 0 وتنتهي عند length-1",id:"A"},{t:"يجب استخدام i-- للبحث",id:"B"},{t:"يجب البدء من i=1",id:"C"},{t:"خاصية length لا تستخدم مع المصفوفات",id:"D"}], ans: "A", hint: "استخدام <= يجعل الحلقة تبحث في الفهرس رقم 5 وهو غير موجود (undefined)." },
+            { skill: "الاستنتاج (For...of Loops)", text: "ماذا سيطبع هذا الكود الذي يهدف لطباعة عناصر المصفوفة باستخدام حلقة for...of؟", code: "let data =[];\nfor(let x of data) {\n  console.log(\"Hi\");\n}", options:[{t:"يطبع Hi مرة واحدة",id:"A"},{t:"يطبع undefined",id:"B"},{t:"ينتج خطأ",id:"C"},{t:"لا يطبع شيئاً على الإطلاق",id:"D"}], ans: "D", hint: "بما أن المصفوفة فارغة (طولها 0)، جسم الحلقة لن يُنفذ ولا مرة واحدة." },
+            { skill: "التفكير الحسابي (Tracing Loops)", text: "في الكود التالي، ما هي القيمة النهائية للمتغير total؟", code: "let total = 1;\nfor(let i = 1; i <= 3; i++) {\n  total *= i;\n}", options:[{t:"6",id:"A"},{t:"3",id:"B"},{t:"0",id:"C"},{t:"9",id:"D"}], ans: "A", hint: "في الدورات: 1*1=1، 1*2=2، 2*3=6. النتيجة 6 (مضروب 3)." },
+            { skill: "التحليل (Data Design)", text: "تطبيق يقوم بتحليل بيانات الاستبيانات وتحويلها إلى جداول ورسوم بيانية مرئية. هذه العملية في تصميم البيانات تُسمى:", code: "", options:[{t:"التجريد (Abstraction)",id:"A"},{t:"التصور (Visualization)",id:"B"},{t:"الهيكلة (Structuring)",id:"C"},{t:"التشفير (Encryption)",id:"D"}], ans: "B", hint: "التصور هو تمثيل البيانات بصرياً لتسهيل قراءتها واستيعابها." },
+            { skill: "المفاهيم التكنولوجية (IoT)", text: "أي من التقنيات التالية تتيح ربط الأشياء المادية اليومية بالإنترنت ليتم التحكم بها عن بعد؟", code: "", options:[{t:"الواقع المعزز (AR)",id:"A"},{t:"الواقع الافتراضي (VR)",id:"B"},{t:"إنترنت الأشياء (IoT)",id:"C"},{t:"تشفير البيانات (Encryption)",id:"D"}], ans: "C", hint: "إنترنت الأشياء هو شبكة الأجهزة المتصلة التي تتواصل وتتبادل البيانات." },
+            { skill: "المنطق المتقدم (Boolean Coercion)", text: "ما هو ناتج تقييم التعبير التالي في لغة JavaScript الذي يجمع بين المقارنة ونفي النفي؟", code: "let value = \"\";\nconsole.log(!!value === false);", options:[{t:"ينتج خطأ SyntaxError",id:"A"},{t:"يطبع true",id:"B"},{t:"يطبع false",id:"C"},{t:"يطبع NaN",id:"D"}], ans: "B", hint: "السلسلة الفارغة تعتبر Falsy. النفي المزدوج (!!) يحولها لـ false. (false === false) نتيجتها true." },
+            { skill: "الوعي الأمني (Cyber Threats)", text: "ما الفرق في أمن المعلومات بين فيروس حصان طروادة والدودة؟", code: "", options:[{t:"حصان طروادة يتكاثر ذاتياً، بينما الدودة تتخفى",id:"A"},{t:"حصان طروادة يتخفى في برامج شرعية، بينما الدودة تستنسخ نفسها تلقائياً وتنتشر",id:"B"},{t:"كلاهما يطلبان فدية",id:"C"},{t:"طروادة يهاجم الأجهزة، والدودة للشبكات فقط",id:"D"}], ans: "B", hint: "الدودة تنتشر آلياً بدون تدخل بشري." },
+            { skill: "AI Ethics (Machine Learning)", text: "أثناء جمع وتحليل البيانات لتدريب نموذج (تعلم آلي)، من الضروري:", code: "", options:[{t:"إدخال بيانات متحيزة لتسريع التعلم",id:"A"},{t:"استخدام بيانات قليلة جداً",id:"B"},{t:"إدخال بيانات متنوعة ودقيقة وخالية من التحيز لضمان قرارات عادلة",id:"C"},{t:"تجاهل البيانات القديمة",id:"D"}], ans: "C", hint: "جودة وعدالة الذكاء الاصطناعي تعتمد كلياً على جودة وموضوعية البيانات." },
+            { skill: "نظم المعلومات (Databases)", text: "في قواعد البيانات، ما هي لغة الاستعلام الهيكلية (SQL) المخصصة لقواعد البيانات العلائقية؟", code: "", options:[{t:"لغة تصميم واجهات",id:"A"},{t:"لغة تطبيقات هواتف",id:"B"},{t:"لغة قياسية تُستخدم للبحث والتحديث واستخراج البيانات من الجداول المترابطة",id:"C"},{t:"نظام تشغيل مخصص",id:"D"}], ans: "C", hint: "لغة SQL هي لغة التخاطب الأساسية مع أنظمة قواعد البيانات العلائقية." },
+            { skill: "تحليل الكود (Function Mechanics)", text: "ما هي وظيفة الأمر return داخل الدالة البرمجية؟", code: "", options:[{t:"إيقاف البرنامج بالكامل وإظهار رسالة خطأ",id:"A"},{t:"إعادة تكرار الحلقة",id:"B"},{t:"إنهاء تنفيذ الدالة فوراً وإرجاع النتيجة أو القيمة لمن استدعى الدالة",id:"C"},{t:"طباعة القيمة للمستخدم",id:"D"}], ans: "C", hint: "الأمر return هو طريقة الدالة لتسليم المخرجات النهائية لمن استدعاها." },
+            { skill: "التفكير الحسابي (Spreadsheet)", text: "في ورقة عمل الجداول الحسابية، تم كتابة الصيغة التالية لمحاكاة رمي حجر نرد ذو 6 أوجه. أي صيغة هي الصحيحة؟", code: "", options:[{t:"=INT(RAND() * 6) + 1",id:"A"},{t:"=RAND() * 6",id:"B"},{t:"=RANDBETWEEN(0, 5)",id:"C"},{t:"=ROUND(RAND() * 6)",id:"D"}], ans: "A", hint: "توليد كسر ثم الضرب في 6 وإزالة الكسر والجمع مع 1 يعطي (1 إلى 6)." },
+            { skill: "Debugging (Array Coercion)", text: "قام مبرمج بكتابة الكود التالي لجمع مصفوفتين. ما هو الناتج الفعلي للطباعة؟", code: "let a = [4, 5];\nlet b = [6, 7];\nconsole.log(a + b);", options: [{t:"[4-7]",id:"A"},{t:"NaN",id:"B"},{t:"4,56,7",id:"C"},{t:"10",id:"D"}], ans: "C", hint: "المتصفح يحول المصفوفتين لنصوص ويدمجهما كـ string." },
+            { skill: "المواطنة الرقمية (Copyrights)", text: "أي من المبادئ التالية يُعتبر أساساً في قوانين الملكية الفكرية عند استخدام مواد من الإنترنت؟", code: "", options:[{t:"كل ما يوجد على الإنترنت هو ملكية عامة",id:"A"},{t:"الاستخدام العادل يسمح ببيع العمل دون إذن",id:"B"},{t:"يجب احترام رخص المشاع الإبداعي والالتزام بشروطها",id:"C"},{t:"الملكية الفكرية تحمي الأجهزة المادية فقط",id:"D"}], ans: "C", hint: "رخص المشاع الإبداعي تنظم كيفية إعادة استخدام الأعمال الرقمية قانونياً." },
+            { skill: "الأساسيات (Character Encoding)", text: "يُعد نظام التشفير (Unicode) أفضل من نظام (ASCII) في بيئات الويب. ما السبب التقني؟", code: "", options:[{t:"لأنه يستهلك مساحة تخزين أقل",id:"A"},{t:"لأنه مخصص للغة الإنجليزية فقط",id:"B"},{t:"لأنه معيار دولي يستوعب أحرف ورموز جميع لغات العالم لتجنب فساد البيانات",id:"C"},{t:"لأنه نظام تشفير فيروسات",id:"D"}], ans: "C", hint: "الـ Unicode يحل مشكلة تشوه النصوص عند تداخل اللغات المختلفة." },
+            { skill: "الاستنتاج (2D Arrays)", text: "لدينا مصفوفة ثنائية الأبعاد. كيف يمكن استخراج الحرف \"X\" بالكود الصحيح؟", code: "let grid =[\n  [\"A\",\"B\"],\n  [\"C\",\"X\"]\n];", options:[{t:"grid[5]",id:"A"},{t:"grid[1][1]",id:"B"},{t:"grid[2][2]",id:"C"},{t:"grid[4][5]",id:"D"}], ans: "B", hint: "الصف الثاني فهرسه 1، والعمود الثاني فهرسه 1." },
+            { skill: "تطبيق الويب (HTML Elements)", text: "أي وسم HTML يُستخدم لإنشاء قائمة تعداد نقطي (غير مرتبة)؟", code: "", options:[{t:"<ol>",id:"A"},{t:"<li>",id:"B"},{t:"<list>",id:"C"},{t:"<ul>",id:"D"}], ans: "D", hint: "الوسم <ul> يعبر عن Unordered List." },
+            { skill: "التصميم والتنسيق (CSS Selectors)", text: "كيف يفسر مترجم CSS التعبير البرمجي التالي لاستخراج الفئات؟", code: ".box.red { background: red; }", options:[{t:"يستهدف جميع العناصر التي تحتوي على أي من الفئتين",id:"A"},{t:"يستهدف العناصر التي تحتوي على الفئة red بداخل box",id:"B"},{t:"يستهدف العنصر الذي يحتوي حصراً على الفئتين معاً في نفس الوقت",id:"C"},{t:"يستهدف عنصر HTML اسمه box",id:"D"}], ans: "C", hint: "كتابة الفئات متصلة (بدون مسافة) تعني استهداف العنصر الذي يحمل كلتا الفئتين معاً (AND logic)." },
+            { skill: "تحليل الكود (Iterables)", text: "إذا تم كتابة الكود التالي باستخدام حلقة for...of، ماذا ستكون النتيجة؟", code: "let str = \"AI\";\nfor (let c of str) {\n  console.log(c);\n}", options:[{t:"يطبع 0 ثم 1",id:"A"},{t:"يطبع A ثم I",id:"B"},{t:"ينتج خطأ",id:"C"},{t:"يطبع AI في سطر واحد",id:"D"}], ans: "B", hint: "حلقة for...of تعمل أيضاً مع السلاسل النصية (Strings) وتستخرج أحرفها بالترتيب." },
+            { skill: "Debugging (Equality Operators)", text: "لماذا يُعتبر ناتج المقارنة (0 == \"\") هو true، بينما (0 === \"\") هو false؟", code: "", options:[{t:"لأن كلاهما كائنات فارغة",id:"A"},{t:"لأن (==) تقوم بالتحويل الضمني، بينما (===) ترفض التحويل وتقارن النوع والقيمة",id:"B"},{t:"لأن الصفر لا يساوي شيئاً",id:"C"},{t:"هذا خطأ في السؤال",id:"D"}], ans: "B", hint: "المقارنة الصارمة (===) ترفض الـ Type Coercion." },
+            { skill: "الوعي الأمني (CIA Triad)", text: "في مجال أمن المعلومات، ما هو المفهوم الذي يضمن عدم تغيير أو تدمير البيانات أثناء نقلها؟", code: "", options:[{t:"السرية",id:"A"},{t:"التوافرية",id:"B"},{t:"المصادقة",id:"C"},{t:"السلامة (Integrity)",id:"D"}], ans: "D", hint: "السلامة تعني حماية البيانات من التلاعب والعبث." },
+            { skill: "التفكير الحسابي (Modulo Logic)", text: "ما هو التفسير العلمي البرمجي لقيام الكود بطباعة \"Even\"؟", code: "let x = 14;\nif (x % 2 === 0) {\n  console.log(\"Even\");\n}", options:[{t:"لأن المتغير x قيمته أكبر من الصفر",id:"A"},{t:"لأن باقي قسمة 14 على 2 يساوي الصفر تماماً، مما يثبت أنه زوجي",id:"B"},{t:"لأن % تستخرج الناتج 7",id:"C"},{t:"لأن % يضاعف الرقم",id:"D"}], ans: "B", hint: "معامل باقي القسمة (Modulo %) هو الأداة لاختبار الزوجي والفردي." },
+            { skill: "فهم الشبكات (Addressing)", text: "ما هو دور (MAC Address) مقارنة بـ (IP Address) في شبكات الكمبيوتر؟", code: "", options:[{t:"MAC متغير و IP ثابت",id:"A"},{t:"MAC عنوان فيزيائي فريد ثابت، و IP عنوان منطقي متغير",id:"B"},{t:"كلاهما نفس الشيء",id:"C"},{t:"MAC للشبكات اللاسلكية فقط",id:"D"}], ans: "B", hint: "الـ MAC هو البصمة المادية للجهاز، والـ IP هو عنوانه البريدي المتغير." },
+            { skill: "المنطق المتقدم (Order of Operations)", text: "ما هو الناتج المنطقي للتعبير المركب التالي بوجود الأقواس؟", code: "console.log( (5 > 10 || 10 === 10) && (1 !== 2) );", options:[{t:"false",id:"A"},{t:"Error",id:"B"},{t:"undefined",id:"C"},{t:"true",id:"D"}], ans: "D", hint: "القوس الأول true. القوس الثاني true. الناتج true." },
+            { skill: "الأساسيات (Code Comments)", text: "طالب قام بكتابة تعليق (Comment) يمتد لعدة أسطر في JavaScript. ما هي الصيغة الصحيحة؟", code: "", options:[{t:"<!-- Comment -->",id:"A"},{t:"// Comment //",id:"B"},{t:"/* Comment */",id:"C"},{t:"** Comment **",id:"D"}], ans: "C", hint: "الرمز /* للبداية و */ للنهاية." },
+            { skill: "المواطنة الرقمية (Universal Design)", text: "وفقاً لمبادئ التصميم الشامل، يجب أن يكون تصميم البرامج:", code: "", options:[{t:"بأكواد معقدة جداً",id:"A"},{t:"قابلاً للاستخدام بيسر وسهولة من جميع الأشخاص (ذوي الهمم)",id:"B"},{t:"مخصصاً للشباب فقط",id:"C"},{t:"بصور فقط",id:"D"}], ans: "B", hint: "التصميم الشامل يهدف إلى الشمولية وإتاحة التكنولوجيا للجميع دون إقصاء." }
         ];
 
-        // --- App Logic ---
-        let currentIdx = 0;
-        let score = 0;
-        let userName = '';
-        let userAnswers = new Array(QUESTIONS.length).fill(null);
-        let timer = 3600;
-        let timerInterval;
-        let isAnswered = false;
+        // حالة التطبيق 
+        const state = {
+            currentQuestionIndex: 0, score: 0,
+            studentData: { name: '' },
+            isProcessing: false, mistakes:[],
+            timeRemaining: 50 * 60, 
+            timerInterval: null
+        };
 
-        function startExam() {
-            const input = document.getElementById('user-name-input');
-            userName = input.value.trim();
-            if (!userName) { alert('يرجى إدخال اسمك للبدء'); return; }
+        const container = document.getElementById('app-container');
+        const progressWrapper = document.getElementById('progressWrapper');
+        const progressBar = document.getElementById('progressBar');
 
-            document.getElementById('welcome-screen').classList.remove('active');
-            document.getElementById('exam-screen').classList.add('active');
-            renderQuestion();
-            startTimer();
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) { const AudioContext = window.AudioContext || window.webkitAudioContext; if(AudioContext) audioCtx = new AudioContext(); }
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        }
+        
+        function playTone(type) {
+            if (!audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                if (type === 'correct') { 
+                    osc.type = 'sine'; 
+                    osc.frequency.setValueAtTime(600, audioCtx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1); 
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); 
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3); 
+                } else { 
+                    osc.type = 'sawtooth'; 
+                    osc.frequency.setValueAtTime(150, audioCtx.currentTime); 
+                    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.2); 
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime); 
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3); 
+                }
+                osc.start(); 
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e) {}
+        }
+
+        function changeHue() { document.documentElement.style.setProperty('--hue', Math.floor(Math.random() * 360)); }
+        function createCard(html) { const card = document.createElement('div'); card.className = 'card'; card.innerHTML = html; return card; }
+        
+        function transitionTo(newCard) {
+            const oldCard = document.querySelector('.card.active');
+            if (oldCard) {
+                oldCard.classList.remove('active');
+                setTimeout(() => oldCard.remove(), 400);
+            }
+            container.appendChild(newCard);
+            setTimeout(() => newCard.classList.add('active'), 10);
+            changeHue();
         }
 
         function startTimer() {
-            timerInterval = setInterval(() => {
-                timer--;
-                const m = Math.floor(timer / 60);
-                const s = timer % 60;
-                document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                if (timer <= 0) finishExam();
+            clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                if(state.timeRemaining <= 0) {
+                    clearInterval(state.timerInterval);
+                    showResults();
+                    return;
+                }
+                state.timeRemaining--;
+                const m = Math.floor(state.timeRemaining / 60).toString().padStart(2, '0');
+                const s = (state.timeRemaining % 60).toString().padStart(2, '0');
+                const timerEl = document.getElementById('quizTimerText');
+                const timerBadge = document.getElementById('quizTimerBadge');
+                if (timerEl) timerEl.innerText = `${m}:${s}`;
+                if (state.timeRemaining < 300 && timerBadge) timerBadge.classList.add('timer-danger');
             }, 1000);
         }
 
-        function renderQuestion() {
-            const q = QUESTIONS[currentIdx];
-            document.getElementById('q-count-display').innerText = currentIdx + 1;
-            document.getElementById('q-cat').innerText = q.cat;
-            document.getElementById('q-text').innerText = q.q;
-            document.getElementById('progress-bar').style.width = `${((currentIdx + 1) / QUESTIONS.length) * 100}%`;
-
-            const codeContainer = document.getElementById('code-container');
-            if (q.code) {
-                codeContainer.classList.remove('hidden');
-                document.getElementById('code-area').innerText = q.code;
-            } else {
-                codeContainer.classList.add('hidden');
-            }
-
-            const grid = document.getElementById('choices-grid');
-            grid.innerHTML = '';
-            
-            const variantClasses = ['choice-a', 'choice-b', 'choice-c', 'choice-d'];
-            const letters = ['A', 'B', 'C', 'D'];
-
-            q.choices.forEach((choice, i) => {
-                const btn = document.createElement('button');
-                btn.className = `choice ${variantClasses[i]}`;
-                btn.innerHTML = `
-                    <div class="choice-letter">${letters[i]}</div>
-                    <div class="text-xl font-medium">${choice}</div>
-                `;
-                btn.onclick = () => handleSelect(i);
-                grid.appendChild(btn);
-            });
-            isAnswered = false;
-        }
-
-        function handleSelect(idx) {
-            if (isAnswered) return;
-            isAnswered = true;
-            
-            userAnswers[currentIdx] = idx;
-            const q = QUESTIONS[currentIdx];
-            const btns = document.querySelectorAll('.choice');
-
-            // Apply feedback to all buttons
-            btns.forEach((btn, i) => {
-                btn.disabled = true;
-                if (i === q.ans) {
-                    btn.classList.add('correct');
-                } else if (i === idx) {
-                    btn.classList.add('wrong');
-                }
-            });
-
-            if (idx === q.ans) score++;
-
-            setTimeout(() => {
-                if (currentIdx < QUESTIONS.length - 1) {
-                    currentIdx++;
-                    renderQuestion();
-                } else {
-                    finishExam();
-                }
-            }, 1200);
-        }
-
-        function finishExam() {
-            clearInterval(timerInterval);
-            document.getElementById('exam-screen').classList.remove('active');
-            document.getElementById('results-screen').classList.add('active');
-            
-            const total = QUESTIONS.length;
-            const percent = (score / total) * 100;
-            document.getElementById('final-score-display').innerText = `${score}/${total}`;
-            document.getElementById('final-percent-display').innerText = `${percent.toFixed(1)}%`;
-            document.getElementById('display-name').innerText = userName;
-
-            // WhatsApp link
-            const waText = encodeURIComponent(`أهلاً بك، أنا الطالب: ${userName}. حصلت على ${score} من ${total} بنسبة ${percent.toFixed(1)}% في اختبار المهندس محمد شاهين.`);
-            document.getElementById('whatsapp-share').href = `https://wa.me/201029966799?text=${waText}`;
-
-            // Reviews
-            const list = document.getElementById('review-list');
-            list.innerHTML = '';
-            QUESTIONS.forEach((q, idx) => {
-                const ansIdx = userAnswers[idx];
-                const isCorrect = ansIdx === q.ans;
-                const card = document.createElement('div');
-                card.className = `review-card ${isCorrect ? 'border-[#10b981]' : 'border-[#ef4444]'}`;
-                card.innerHTML = `
-                    <div class="flex justify-between items-start mb-4 gap-4">
-                        <h4 class="text-lg font-bold text-white">إجابة سؤال ${idx + 1}: ${q.q}</h4>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold ${isCorrect ? 'bg-[#10b981]/20 text-[#10b981]' : 'bg-[#ef4444]/20 text-[#ef4444]'}">
-                            ${isCorrect ? 'صحيحة' : 'خاطئة'}
-                        </span>
+        function showDesignerAndIntro() {
+            const html = `
+                <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; width: 100%;">
+                    <div class="rect-img-container">
+                        <img src="https://share.google/DNdZnIVkmNOhKSInM" alt="المهندس محمد محمود شاهين">
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div class="p-3 bg-black/20 rounded-lg">
-                            <p class="text-gray-400 text-xs mb-1">إجابتك:</p>
-                            <p class="font-bold ${isCorrect ? 'text-[#10b981]' : 'text-[#ef4444]'}">${ansIdx !== null ? q.choices[ansIdx] : 'لم تجب'}</p>
-                        </div>
-                        <div class="p-3 bg-black/20 rounded-lg">
-                            <p class="text-gray-400 text-xs mb-1">الصحيحة:</p>
-                            <p class="font-bold text-[#10b981]">${q.choices[q.ans]}</p>
+                    <div style="margin-top: 15px; width: 100%;">
+                        <span style="color:#cbd5e1; font-size:1rem; font-weight:700; display:block; margin-bottom:5px;">إعداد وتصميم</span>
+                        <div class="brand-name">المهندس محمد محمود شاهين</div>
+                    </div>
+                    <p style="font-size: 1rem; color: var(--text-muted); margin: 12px 0; line-height: 1.6; font-weight:700; text-align: center;">خبير النظم التعليمية الذكية وتقنيات الذكاء الاصطناعي</p>
+                    <div style="width: 100%; max-width: 400px; margin-top: 15px;">
+                        <div class="input-group">
+                            <label>اسمك الثلاثي (مطلوب) 👤</label>
+                            <input type="text" id="studentName" placeholder="أدخل اسمك لتبدأ..." autocomplete="off">
                         </div>
                     </div>
-                    <div class="p-3 bg-white/5 rounded-lg border border-white/5">
-                        <p class="text-[#f59e0b] font-bold text-xs mb-1">التفسير:</p>
-                        <p class="text-gray-300 text-sm italic">${q.explain}</p>
-                    </div>
-                `;
-                list.appendChild(card);
+                </div>
+                <button class="btn-primary" id="btnNext" disabled style="margin-top: 15px;">التالي <i class="fas fa-arrow-left"></i></button>
+            `;
+            const card = createCard(html); 
+            transitionTo(card);
+            const inputName = card.querySelector('#studentName'), btn = card.querySelector('#btnNext');
+            inputName.addEventListener('input', () => { btn.disabled = inputName.value.trim().length < 3; });
+            btn.addEventListener('click', () => {
+                state.studentData.name = inputName.value.trim();
+                showDedication();
             });
-
-            // Re-init lucide
-            lucide.createIcons();
         }
 
-        // Init icons on load
-        window.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-        });
+        function showDedication() {
+            initAudio();
+            if (typeof confetti === 'function') confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            const html = `
+                <div class="dedication-content">
+                    <h1 class="dedication-title glow-text">✨ إهداء خاص ✨</h1>
+                    <div class="dedication-section ded-delay-1 float-animation">
+                        <div class="ded-label">🎩 إلى السيد موجه عام الكمبيوتر التعليمي بكفر الشيخ</div>
+                        <div class="name-highlight pulse-gold">الأستاذ / مصطفى كساب</div>
+                    </div>
+                    <div class="dedication-section ded-delay-2">
+                        <div class="ded-label">📚 وكذلك الإهداء إلى توجيه الكمبيوتر التعليمي بإدارة قلين التعليمية</div>
+                        <div class="name-highlight shine">الأستاذ / السعيد شكر</div>
+                        <div class="name-highlight shine">الأستاذ / صبحي هاشم</div>
+                    </div>
+                    <div class="dedication-timer-box"><i class="fas fa-hourglass-half"></i> سيبدأ الاختبار تلقائياً خلال <span id="dedTimer">15</span> ثانية</div>
+                </div>
+            `;
+            const card = createCard(html); 
+            transitionTo(card);
+            let timeLeft = 15;
+            const timerEl = card.querySelector('#dedTimer');
+            const interval = setInterval(() => {
+                timeLeft--;
+                if(timerEl) timerEl.innerText = timeLeft;
+                if(timeLeft <= 0) { clearInterval(interval); startQuizReal(); }
+            }, 1000);
+        }
+
+        function startQuizReal() {
+            progressWrapper.style.display = 'block';
+            startTimer();
+            showQuestion(0);
+        }
+
+        function restartQuiz() {
+            state.currentQuestionIndex = 0; state.score = 0; state.mistakes = []; state.timeRemaining = 50 * 60;
+            if(state.timerInterval) clearInterval(state.timerInterval);
+            progressWrapper.style.display = 'block';
+            startTimer();
+            showQuestion(0);
+        }
+
+        function showQuestion(index) {
+            if (index >= quizData.length) { showResults(); return; }
+            state.currentQuestionIndex = index; 
+            const q = quizData[index];
+            progressBar.style.width = `${((index) / quizData.length) * 100}%`;
+            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5), letters = ['A', 'B', 'C', 'D'];
+            const m = Math.floor(state.timeRemaining / 60).toString().padStart(2, '0');
+            const s = (state.timeRemaining % 60).toString().padStart(2, '0');
+            const dangerClass = state.timeRemaining < 300 ? 'timer-danger' : '';
+            
+            let html = `
+                <div class="question-meta">
+                    <span class="timer-badge ${dangerClass}" id="quizTimerBadge"><i class="fas fa-clock"></i> <span id="quizTimerText">${m}:${s}</span></span>
+                    <span>السؤال ${index + 1} / ${quizData.length}</span>
+                    <span style="color: hsla(var(--hue), 90%, 70%, 1);"><i class="fas fa-brain"></i> ${q.skill}</span>
+                </div>
+                <div class="question-text">${q.text}</div>
+                ${q.code ? `<div class="code-block">${q.code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>` : ''}
+                <div class="options-grid">
+                    ${shuffledOptions.map((opt, i) => `<div class="option-btn" data-id="${opt.id}"><div class="option-letter">${letters[i]}</div><div style="flex-grow: 1; text-align: center;">${opt.t.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div></div>`).join('')}
+                </div>
+            `;
+            const card = createCard(html); 
+            transitionTo(card); 
+            state.isProcessing = false;
+            
+            const buttons = card.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (state.isProcessing) return; 
+                    state.isProcessing = true;
+                    const selectedId = this.getAttribute('data-id'), isCorrect = (selectedId === q.ans);
+                    buttons.forEach(b => b.classList.add('disabled'));
+                    if (isCorrect) {
+                        this.classList.add('correct'); 
+                        playTone('correct'); 
+                        state.score++;
+                    } else {
+                        this.classList.add('wrong'); 
+                        playTone('wrong');
+                        state.mistakes.push({ q: q.text, code: q.code, w: q.options.find(o => o.id === selectedId).t, c: q.options.find(o => o.id === q.ans).t, h: q.hint });
+                        buttons.forEach(b => { if (b.getAttribute('data-id') === q.ans) b.classList.add('correct'); });
+                    }
+                    setTimeout(() => showQuestion(index + 1), 1800);
+                });
+            });
+        }
+
+        function showResults() {
+            clearInterval(state.timerInterval);
+            progressWrapper.style.display = 'none';
+            const total = quizData.length, percentage = Math.round((state.score / total) * 100);
+            let message = '', emoji = '';
+            if (percentage < 50) { message = 'شكلك مفتحتش الكتاب حاول مرة أخرى'; emoji = '❌😄'; }
+            else if (percentage <= 64) { message = 'شد حيلك مقبول'; emoji = '🙂'; }
+            else if (percentage <= 74) { message = 'حلو يابني جيد'; emoji = '👍'; }
+            else if (percentage <= 84) { message = 'جيد جدًا يا هندس'; emoji = '🔥'; }
+            else { message = 'ممتاز يا هندسة'; emoji = '🏆👑'; }
+            
+            if (percentage >= 50) try { confetti({ particleCount: 150, spread: 80, origin: { y: 0.5 } }); } catch(e){}
+            
+            const html = `
+                <div style="flex-grow:1; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%;">
+                    <h2 class="title">التقرير النهائي 📊</h2>
+                    <p style="font-size:1.4rem; margin-top: 8px; font-weight:800; text-align:center;">البطل: <strong style="color: hsla(var(--hue), 80%, 65%, 1);">${state.studentData.name}</strong></p>
+                    <div class="score-circle" style="--percentage: ${percentage}"><div class="score-value">${percentage}%</div></div>
+                    <h3 style="font-size: 1.6rem; margin: 10px 0; text-align:center;">${message} ${emoji}</h3>
+                    <p style="color: var(--text-muted); font-size: 1.2rem; margin-bottom: 20px; text-align:center;">الإجابات الصحيحة: ${state.score} من ${total}</p>
+                    <div style="display:flex; flex-direction:column; gap:12px; width:100%; max-width: 400px; margin:0 auto;">
+                        ${state.mistakes.length > 0 ? `<button class="btn-primary btn-review" id="btnMistakes">مراجعة الأخطاء 📖</button>` : ''}
+                        <button class="btn-primary btn-restart" id="btnRestart">إعادة الاختبار 🔄</button>
+                        <button class="btn-primary btn-whatsapp" id="btnWhatsapp">إرسال للمهندس 📲 <i class="fab fa-whatsapp"></i></button>
+                        <button class="btn-primary" id="btnFinish" style="background: rgba(255,255,255,0.05);">الخاتمة 🏁</button>
+                    </div>
+                </div>
+            `;
+            const card = createCard(html); 
+            transitionTo(card);
+            if (state.mistakes.length > 0) card.querySelector('#btnMistakes').addEventListener('click', showMistakes);
+            card.querySelector('#btnRestart').addEventListener('click', restartQuiz);
+            card.querySelector('#btnWhatsapp').addEventListener('click', () => {
+                const msg = `مرحباً 🌹\nالطالب: *${state.studentData.name}*\nالنتيجة: *${state.score}/${total}*\nالنسبة: *${percentage}%*\nالتقييم: *${message}*`;
+                window.open(`https://wa.me/201029966799?text=${encodeURIComponent(msg)}`, '_blank');
+            });
+            card.querySelector('#btnFinish').addEventListener('click', showOutro);
+        }
+
+        function showMistakes() {
+            const html = `<h2 class="title" style="font-size: 1.8rem;">مراجعة الأخطاء 📖</h2>
+                <div style="display:flex; flex-direction:column; gap: 12px; overflow-y:auto; flex-grow:1; width:100%;">
+                    ${state.mistakes.map((m, i) => `<div class="mistake-item"><h4 style="text-align:center;">${i+1}. ${m.q}</h4>${m.code ? `<div class="code-block">${m.code.replace(/</g,"&lt;")}</div>` : ''}<div class="mistake-ans m-wrong"><i class="fas fa-times-circle"></i> إجابتك: ${m.w}</div><div class="mistake-ans m-correct"><i class="fas fa-check-circle"></i> الصحيحة: ${m.c}</div><div class="m-hint"><i class="fas fa-lightbulb"></i> <strong>تلميح:</strong> ${m.h}</div></div>`).join('')}
+                </div>
+                <div style="display:flex; flex-direction:column; gap: 12px; margin-top: 15px; width:100%; max-width:400px; margin-left:auto; margin-right:auto;">
+                    <button class="btn-primary btn-restart" id="btnRestartReview">إعادة الاختبار 🔄</button>
+                    <button class="btn-primary" id="btnFinishReview">الخاتمة 🏁</button>
+                </div>`;
+            const card = createCard(html); 
+            transitionTo(card);
+            card.querySelector('#btnRestartReview').addEventListener('click', restartQuiz);
+            card.querySelector('#btnFinishReview').addEventListener('click', showOutro);
+        }
+
+        function showOutro() {
+            const html = `<div style="flex-grow:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; width:100%;">
+                    <div class="rect-img-container" style="width:140px; height:190px;"><img src="https://cdn.jsdelivr.net/gh/mhshahen6/mh_photo@main/1770841296798.webp" alt="مهندس"></div>
+                    <h2 class="title" style="margin-top:15px;">Thanks & Regards ❤️</h2>
+                    <div class="brand-name" style="font-size:1.3rem;">المهندس محمد محمود شاهين</div>
+                    <p style="color: var(--text-muted); margin-top: 10px; font-size:0.9rem; text-align:center;">تم بناء هذا النظام وفق المعايير 2026 العالمية للاختبارات الذكية.<br>جميع الحقوق محفوظة</p>
+                    <div class="links-grid"><a href="https://aiqureo.blogspot.com" target="_blank" class="link-item"><i class="fas fa-globe"></i> Ai Qureo</a><a href="https://mhshahe.github.io/cv" target="_blank" class="link-item"><i class="fas fa-id-card"></i> السيرة الذاتية</a><a href="https://6uujfaf6t7.skywork.website" target="_blank" class="link-item"><i class="fas fa-cloud"></i> Skywork</a><a href="https://deira1.blogspot.com/p/portfolio.html" target="_blank" class="link-item"><i class="fas fa-briefcase"></i> معرض الأعمال</a><a href="https://aicolen.blogspot.com" target="_blank" class="link-item"><i class="fas fa-robot"></i> AI Colen</a><a href="https://qureo1.blogspot.com" target="_blank" class="link-item"><i class="fas fa-layer-group"></i> Qureo 1 Hub</a></div>
+                </div>`;
+            transitionTo(createCard(html));
+        }
+
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('DOMContentLoaded', showDesignerAndIntro);
     </script>
+</body>
+</html>
+<script type="text/javascript">
+(function() {
+
+})();
+</script>
 </body>
 </html>
